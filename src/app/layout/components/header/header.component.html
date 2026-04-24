@@ -1,0 +1,17 @@
+<header class="header app-card">
+  <div>
+    <p class="header__eyebrow">Admin workspace</p>
+    <h1>Enterprise operations dashboard</h1>
+  </div>
+
+  <div class="header__actions" *ngIf="session$ | async as session">
+    <div class="header__profile">
+      <strong>{{ session.user.name }}</strong>
+      <span>{{ session.user.role }}</span>
+    </div>
+
+    <button type="button" class="header__button" (click)="signOut()">
+      Sign out
+    </button>
+  </div>
+</header>

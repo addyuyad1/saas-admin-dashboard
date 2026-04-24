@@ -1,0 +1,71 @@
+:root {
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --surface-muted: #eef3fb;
+  --border: #d8e0ee;
+  --text: #172033;
+  --text-muted: #5d6980;
+  --primary: #1f6feb;
+  --primary-dark: #194da3;
+  --success: #17803d;
+  --warning: #b25c00;
+  --shadow: 0 16px 40px rgba(31, 57, 102, 0.08);
+  --radius-lg: 24px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(180deg, #eef4fb 0%, #f8fbff 45%, #f4f7fb 100%);
+  color: var(--text);
+}
+
+body {
+  min-width: 320px;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: #e8f1ff;
+  color: var(--primary-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+}

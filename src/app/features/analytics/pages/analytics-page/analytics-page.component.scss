@@ -1,0 +1,20 @@
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.analytics-card {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1.25rem;
+}
+
+.analytics-card strong {
+  font-size: 2rem;
+}
+
+.analytics-card p {
+  margin: 0;
+  color: var(--text-muted);
+}

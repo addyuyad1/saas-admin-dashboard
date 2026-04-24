@@ -1,0 +1,74 @@
+.sidebar {
+  display: grid;
+  align-content: start;
+  gap: 2rem;
+  padding: 1.5rem;
+  background: #10203e;
+  color: #f4f7fb;
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.sidebar__brand strong,
+.sidebar__brand p {
+  display: block;
+}
+
+.sidebar__brand p {
+  margin: 0.2rem 0 0;
+  color: rgba(244, 247, 251, 0.68);
+  font-size: 0.875rem;
+}
+
+.sidebar__brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.9rem;
+  background: linear-gradient(135deg, #3f8cff, #7dc2ff);
+  color: #10203e;
+  font-weight: 800;
+}
+
+.sidebar__nav {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sidebar__link {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 1rem;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.02);
+  transition: background-color 120ms ease, border-color 120ms ease,
+    transform 120ms ease;
+}
+
+.sidebar__link:hover,
+.sidebar__link.is-active {
+  border-color: rgba(125, 194, 255, 0.25);
+  background: rgba(125, 194, 255, 0.12);
+  transform: translateX(2px);
+}
+
+.sidebar__link small {
+  color: rgba(244, 247, 251, 0.68);
+}
+
+@media (max-width: 960px) {
+  .sidebar {
+    gap: 1rem;
+  }
+
+  .sidebar__nav {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}

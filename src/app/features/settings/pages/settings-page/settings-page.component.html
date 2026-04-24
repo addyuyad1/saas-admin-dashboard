@@ -1,0 +1,11 @@
+<app-page-shell
+  title="Settings"
+  subtitle="Keep operational settings grouped by domain so future forms and API adapters remain easy to reason about."
+>
+  <section class="settings-list">
+    <article class="settings-card app-card" *ngFor="let section of sections">
+      <h2>{{ section.title }}</h2>
+      <p>{{ section.description }}</p>
+    </article>
+  </section>
+</app-page-shell>

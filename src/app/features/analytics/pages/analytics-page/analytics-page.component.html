@@ -1,0 +1,12 @@
+<app-page-shell
+  title="Analytics"
+  subtitle="Analytics stays lazy loaded and self-contained so charts, facades, and query models can evolve without leaking into other domains."
+>
+  <section class="analytics-grid">
+    <article class="analytics-card app-card" *ngFor="let kpi of kpis">
+      <span class="status-pill">{{ kpi.label }}</span>
+      <strong>{{ kpi.value }}</strong>
+      <p>{{ kpi.insight }}</p>
+    </article>
+  </section>
+</app-page-shell>

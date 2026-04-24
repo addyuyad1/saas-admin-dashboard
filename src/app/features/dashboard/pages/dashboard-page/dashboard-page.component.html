@@ -1,0 +1,12 @@
+<app-page-shell
+  title="Dashboard"
+  subtitle="Start with a clean overview module, then connect real analytics and KPIs behind feature services."
+>
+  <section class="stats-grid">
+    <article class="stat-card app-card" *ngFor="let stat of stats">
+      <p>{{ stat.label }}</p>
+      <strong>{{ stat.value }}</strong>
+      <span class="status-pill">{{ stat.trend }}</span>
+    </article>
+  </section>
+</app-page-shell>

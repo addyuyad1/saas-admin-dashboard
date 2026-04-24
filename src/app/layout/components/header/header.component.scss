@@ -1,0 +1,60 @@
+.header {
+  margin: 1.5rem 1.5rem 0;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header__eyebrow {
+  margin: 0 0 0.3rem;
+  color: var(--primary-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header__profile {
+  display: grid;
+  gap: 0.15rem;
+  text-align: right;
+}
+
+.header__profile span {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.header__button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .header {
+    margin: 1rem 1rem 0;
+    padding: 1rem;
+  }
+
+  .header__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

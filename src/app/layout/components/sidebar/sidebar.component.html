@@ -1,0 +1,22 @@
+<aside class="sidebar">
+  <div class="sidebar__brand">
+    <span class="sidebar__brand-mark">S</span>
+    <div>
+      <strong>SaaS Admin</strong>
+      <p>Enterprise starter</p>
+    </div>
+  </div>
+
+  <nav class="sidebar__nav" aria-label="Primary">
+    <a
+      *ngFor="let item of navigationItems"
+      [routerLink]="item.path"
+      routerLinkActive="is-active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="sidebar__link"
+    >
+      <span>{{ item.label }}</span>
+      <small>{{ item.description }}</small>
+    </a>
+  </nav>
+</aside>

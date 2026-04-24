@@ -1,0 +1,18 @@
+.settings-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.settings-card {
+  padding: 1.25rem;
+}
+
+.settings-card h2 {
+  margin: 0 0 0.5rem;
+}
+
+.settings-card p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}

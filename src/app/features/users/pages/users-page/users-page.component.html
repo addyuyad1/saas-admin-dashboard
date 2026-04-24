@@ -1,0 +1,20 @@
+<app-page-shell
+  title="Users"
+  subtitle="Keep user administration isolated in its own feature module so tables, dialogs, and APIs scale independently."
+>
+  <section class="table-card app-card">
+    <div class="table-card__row table-card__row--head">
+      <span>Name</span>
+      <span>Email</span>
+      <span>Plan</span>
+      <span>Last seen</span>
+    </div>
+
+    <div class="table-card__row" *ngFor="let user of users">
+      <span>{{ user.name }}</span>
+      <span>{{ user.email }}</span>
+      <span>{{ user.plan | fallback:'Trial pending' }}</span>
+      <span>{{ user.lastSeen }}</span>
+    </div>
+  </section>
+</app-page-shell>

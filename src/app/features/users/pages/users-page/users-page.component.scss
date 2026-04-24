@@ -1,0 +1,26 @@
+.table-card {
+  overflow: hidden;
+}
+
+.table-card__row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.table-card__row--head {
+  background: var(--surface-muted);
+  font-weight: 700;
+}
+
+.table-card__row:last-child {
+  border-bottom: 0;
+}
+
+@media (max-width: 780px) {
+  .table-card__row {
+    grid-template-columns: 1fr;
+  }
+}
