@@ -19,25 +19,9 @@
     </div>
   </section>
 
-  <section *ngIf="isLoading" class="dashboard-loading" aria-label="Loading dashboard">
-    <div class="dashboard-summary-grid">
-      <app-skeleton-block
-        *ngFor="let item of skeletonCards"
-        [height]="160"
-      ></app-skeleton-block>
-    </div>
-  </section>
+  <div *ngIf="isLoading" class="dashboard-state app-card">Loading...</div>
 
-  <section *ngIf="!isLoading && errorMessage" class="dashboard-state app-card">
-    <h2>Dashboard unavailable</h2>
-    <p>{{ errorMessage }}</p>
-    <button type="button" class="dashboard-button" (click)="loadDashboard()">
-      Retry
-    </button>
-  </section>
-
-  <ng-container *ngIf="!isLoading && !errorMessage">
-    <ng-container *ngIf="dashboardData$ | async as data; else emptyDashboard">
+  <ng-container *ngIf="dashboardData$ | async as data; else emptyDashboard">
       <section class="dashboard-summary">
         <header class="dashboard-summary__header">
           <div>
@@ -48,29 +32,31 @@
 
         <div class="dashboard-summary-grid">
           <article class="kpi-card app-card">
-            <p class="kpi-card__label">Users</p>
-            <strong>{{ data.users | number }}</strong>
-            <p class="kpi-card__helper">Active customer accounts</p>
+            <h3 class="kpi-card__label">Users</h3>
+            <p class="kpi-card__value">{{ data.users | number }}</p>
           </article>
 
           <article class="kpi-card app-card">
-            <p class="kpi-card__label">Revenue</p>
-            <strong>{{ data.revenue | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
-            <p class="kpi-card__helper">Monthly recurring revenue</p>
+            <h3 class="kpi-card__label">Revenue</h3>
+            <p class="kpi-card__value">
+              {{ data.revenue | currency: 'USD' : 'symbol' : '1.0-0' }}
+            </p>
           </article>
 
           <article class="kpi-card app-card">
-            <p class="kpi-card__label">Growth</p>
-            <strong>{{ data.growth }}%</strong>
-            <p class="kpi-card__helper">Month-over-month expansion</p>
+            <h3 class="kpi-card__label">Growth</h3>
+            <p class="kpi-card__value">{{ data.growth }}%</p>
           </article>
 
           <article class="kpi-card app-card">
-            <p class="kpi-card__label">Sessions</p>
-            <strong>{{ data.sessions | number }}</strong>
-            <p class="kpi-card__helper">User sessions this month</p>
+            <h3 class="kpi-card__label">Sessions</h3>
+            <p class="kpi-card__value">{{ data.sessions | number }}</p>
           </article>
         </div>
+      </section>
+
+      <section *ngIf="errorMessage" class="dashboard-state app-card">
+        <p>{{ errorMessage }}</p>
       </section>
 
       <section class="dashboard-grid">
@@ -132,7 +118,6 @@
           </div>
         </article>
       </section>
-    </ng-container>
   </ng-container>
 
   <ng-template #emptyDashboard>

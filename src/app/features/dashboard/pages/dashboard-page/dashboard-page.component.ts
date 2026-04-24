@@ -1,5 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { EMPTY, Observable, catchError, delay, of, shareReplay, take } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
+import { Observable, catchError, delay, of, shareReplay, take } from 'rxjs';
 
 import {
   LiveActivityItem,
@@ -18,6 +23,12 @@ import { DashboardService } from '../../services/dashboard.service';
 export class DashboardPageComponent implements OnInit {
   readonly skeletonCards = [1, 2, 3, 4];
   readonly activityFeed$: Observable<LiveActivityItem[]>;
+  private readonly fallbackDashboardData: DashboardData = {
+    users: 1240,
+    revenue: 54000,
+    growth: 12,
+    sessions: 18400,
+  };
 
   dashboardData$!: Observable<DashboardData>;
   errorMessage = '';
@@ -27,6 +38,7 @@ export class DashboardPageComponent implements OnInit {
   isInsightLoading = false;
 
   constructor(
+    private readonly changeDetectorRef: ChangeDetectorRef,
     private readonly dashboardService: DashboardService,
     realtimeUpdatesService: RealtimeUpdatesService,
   ) {
@@ -40,18 +52,20 @@ export class DashboardPageComponent implements OnInit {
   loadDashboard(): void {
     this.isLoading = true;
     this.errorMessage = '';
+    this.changeDetectorRef.markForCheck();
 
     this.dashboardData$ = this.dashboardService.getDashboardData().pipe(
       catchError((error: Error) => {
-        this.errorMessage = error.message;
-        this.isLoading = false;
-        return EMPTY;
+        this.errorMessage =
+          error.message || 'Dashboard data could not be loaded.';
+        return of(this.fallbackDashboardData);
       }),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
 
     this.dashboardData$.pipe(take(1)).subscribe(() => {
       this.isLoading = false;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
