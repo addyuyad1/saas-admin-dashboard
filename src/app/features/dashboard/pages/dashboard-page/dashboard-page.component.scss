@@ -1,20 +1,116 @@
-.stats-grid {
+.dashboard-toolbar,
+.widget-library,
+.dashboard-state {
+  padding: 1.25rem 1.35rem;
+}
+
+.dashboard-toolbar,
+.widget-library {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.dashboard-toolbar__eyebrow,
+.widget-library__eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--primary-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dashboard-toolbar h2,
+.widget-library h2,
+.dashboard-state h2 {
+  margin: 0 0 0.35rem;
+}
+
+.dashboard-toolbar__copy,
+.dashboard-state p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.dashboard-toolbar__actions,
+.widget-library__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.dashboard-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.75rem 1.05rem;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+.dashboard-button--secondary {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+}
+
+.dashboard-loading,
+.dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
 }
 
-.stat-card {
+.dashboard-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dashboard-grid__full,
+.dashboard-grid__wide {
+  grid-column: 1 / -1;
+}
+
+.kpi-grid {
   display: grid;
-  gap: 0.75rem;
-  padding: 1.25rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.stat-card p {
-  margin: 0;
-  color: var(--text-muted);
+.dashboard-state {
+  display: grid;
+  gap: 1rem;
 }
 
-.stat-card strong {
-  font-size: 1.9rem;
+@media (max-width: 1100px) {
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-toolbar,
+  .widget-library,
+  .dashboard-state {
+    padding: 1rem;
+  }
+
+  .dashboard-toolbar__actions,
+  .widget-library__actions {
+    width: 100%;
+  }
+
+  .dashboard-button {
+    width: 100%;
+    justify-content: center;
+  }
 }

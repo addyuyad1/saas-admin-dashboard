@@ -1,0 +1,45 @@
+.dashboard-widget {
+  height: 100%;
+  padding: 1.25rem;
+}
+
+.dashboard-widget__header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.dashboard-widget__header h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+}
+
+.dashboard-widget__header p {
+  margin: 0;
+  max-width: 36rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.dashboard-widget__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.dashboard-widget__body {
+  min-height: 180px;
+}
+
+.dashboard-widget__button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.6rem 0.95rem;
+  background: #fff;
+  color: var(--text-muted);
+  font-weight: 600;
+}

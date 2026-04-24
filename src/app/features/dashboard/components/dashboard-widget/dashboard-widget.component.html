@@ -1,0 +1,25 @@
+<section class="dashboard-widget app-card">
+  <header class="dashboard-widget__header">
+    <div>
+      <h2>{{ title }}</h2>
+      <p>{{ subtitle }}</p>
+    </div>
+
+    <div class="dashboard-widget__actions">
+      <ng-content select="[widget-actions]"></ng-content>
+
+      <button
+        *ngIf="removable"
+        type="button"
+        class="dashboard-widget__button"
+        (click)="removeWidget.emit()"
+      >
+        Remove
+      </button>
+    </div>
+  </header>
+
+  <div class="dashboard-widget__body">
+    <ng-content></ng-content>
+  </div>
+</section>

@@ -1,12 +1,113 @@
 <app-page-shell
   title="Dashboard"
-  subtitle="Start with a clean overview module, then connect real analytics and KPIs behind feature services."
+  subtitle="Reusable widgets, mock API-backed state, and responsive charts for a production-ready dashboard foundation."
 >
-  <section class="stats-grid">
-    <article class="stat-card app-card" *ngFor="let stat of stats">
-      <p>{{ stat.label }}</p>
-      <strong>{{ stat.value }}</strong>
-      <span class="status-pill">{{ stat.trend }}</span>
-    </article>
+  <section class="dashboard-toolbar app-card">
+    <div>
+      <p class="dashboard-toolbar__eyebrow">Workspace controls</p>
+      <h2>Operational overview</h2>
+      <p class="dashboard-toolbar__copy">
+        Keep the layout flexible while feature modules and real APIs mature.
+      </p>
+    </div>
+
+    <div class="dashboard-toolbar__actions">
+      <span class="status-pill" *ngIf="data">
+        Updated {{ data.lastUpdated }}
+      </span>
+      <button type="button" class="dashboard-button" (click)="loadDashboard()">
+        Refresh data
+      </button>
+    </div>
   </section>
+
+  <section *ngIf="isLoading" class="dashboard-loading" aria-label="Loading dashboard">
+    <div class="kpi-grid">
+      <app-skeleton-block
+        *ngFor="let item of skeletonCards"
+        [height]="160"
+      ></app-skeleton-block>
+    </div>
+
+    <div class="dashboard-grid">
+      <app-skeleton-block [height]="360"></app-skeleton-block>
+      <app-skeleton-block [height]="360"></app-skeleton-block>
+      <app-skeleton-block [height]="420"></app-skeleton-block>
+    </div>
+  </section>
+
+  <section *ngIf="!isLoading && errorMessage" class="dashboard-state app-card">
+    <h2>Dashboard unavailable</h2>
+    <p>{{ errorMessage }}</p>
+    <button type="button" class="dashboard-button" (click)="loadDashboard()">
+      Retry
+    </button>
+  </section>
+
+  <ng-container *ngIf="!isLoading && !errorMessage && data as dashboard">
+    <section class="widget-library app-card" *ngIf="hiddenWidgets.length">
+      <div>
+        <p class="widget-library__eyebrow">Hidden widgets</p>
+        <h2>Restore dashboard sections</h2>
+      </div>
+
+      <div class="widget-library__actions">
+        <button
+          *ngFor="let widget of hiddenWidgets"
+          type="button"
+          class="dashboard-button dashboard-button--secondary"
+          (click)="restoreWidget(widget.id)"
+        >
+          Add {{ widget.title }}
+        </button>
+      </div>
+    </section>
+
+    <section class="dashboard-grid">
+      <div class="dashboard-grid__full" *ngIf="isWidgetVisible('kpis')">
+        <app-dashboard-widget
+          title="Key performance indicators"
+          subtitle="Primary business health metrics surfaced as reusable KPI cards."
+          (removeWidget)="removeWidget('kpis')"
+        >
+          <div class="kpi-grid">
+            <app-kpi-card
+              *ngFor="let stat of dashboard.kpis"
+              [stat]="stat"
+            ></app-kpi-card>
+          </div>
+        </app-dashboard-widget>
+      </div>
+
+      <div class="dashboard-grid__wide" *ngIf="isWidgetVisible('revenue-trend')">
+        <app-dashboard-widget
+          title="Revenue trend"
+          subtitle="Recurring revenue growth over the last six reporting periods."
+          (removeWidget)="removeWidget('revenue-trend')"
+        >
+          <app-line-chart [data]="dashboard.revenueSeries"></app-line-chart>
+        </app-dashboard-widget>
+      </div>
+
+      <div *ngIf="isWidgetVisible('signup-sources')">
+        <app-dashboard-widget
+          title="Signup sources"
+          subtitle="New account creation grouped by acquisition channel."
+          (removeWidget)="removeWidget('signup-sources')"
+        >
+          <app-bar-chart [data]="dashboard.signupsBySource"></app-bar-chart>
+        </app-dashboard-widget>
+      </div>
+
+      <div *ngIf="isWidgetVisible('user-distribution')">
+        <app-dashboard-widget
+          title="Plan distribution"
+          subtitle="Active users grouped by subscription tier."
+          (removeWidget)="removeWidget('user-distribution')"
+        >
+          <app-pie-chart [data]="dashboard.usersByPlan"></app-pie-chart>
+        </app-dashboard-widget>
+      </div>
+    </section>
+  </ng-container>
 </app-page-shell>

@@ -1,0 +1,27 @@
+.kpi-card {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.15rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.kpi-card__label {
+  margin: 0;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.kpi-card strong {
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+}
+
+.kpi-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}

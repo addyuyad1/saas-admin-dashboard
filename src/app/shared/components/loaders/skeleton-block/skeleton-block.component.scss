@@ -1,0 +1,22 @@
+.skeleton-block {
+  width: 100%;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    90deg,
+    rgba(216, 224, 238, 0.55) 0%,
+    rgba(240, 245, 255, 0.9) 50%,
+    rgba(216, 224, 238, 0.55) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.25s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
