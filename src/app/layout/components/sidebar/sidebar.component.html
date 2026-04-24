@@ -7,7 +7,7 @@
     </div>
   </div>
 
-  <nav class="sidebar__nav" aria-label="Primary">
+  <nav class="sidebar__nav" aria-label="Primary" *ngIf="navigationItems$ | async as navigationItems">
     <a
       *ngFor="let item of navigationItems"
       [routerLink]="item.path"

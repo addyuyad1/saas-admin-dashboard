@@ -1,11 +1,62 @@
 <app-page-shell
   title="Settings"
-  subtitle="Keep operational settings grouped by domain so future forms and API adapters remain easy to reason about."
+  subtitle="User preferences stay accessible to every role, while admin-only governance controls remain clearly separated."
 >
+  <section class="settings-preferences app-card">
+    <div class="settings-preferences__header">
+      <div>
+        <p class="settings-preferences__eyebrow">Preferences</p>
+        <h2>Workspace experience</h2>
+        <p>Persist theme and personal defaults without coupling them to feature modules.</p>
+      </div>
+
+      <span class="status-pill" *ngIf="savedMessage">{{ savedMessage }}</span>
+    </div>
+
+    <form class="settings-form" [formGroup]="preferencesForm" (ngSubmit)="savePreferences()">
+      <label>
+        <span>Theme</span>
+        <select formControlName="theme">
+          <option *ngFor="let theme of themes" [value]="theme">
+            {{ theme | titlecase }}
+          </option>
+        </select>
+      </label>
+
+      <label>
+        <span>Timezone</span>
+        <input type="text" formControlName="timezone" />
+      </label>
+
+      <label class="settings-checkbox">
+        <input type="checkbox" formControlName="compactMode" />
+        <span>Enable compact density</span>
+      </label>
+
+      <label class="settings-checkbox">
+        <input type="checkbox" formControlName="emailDigest" />
+        <span>Receive daily email digest</span>
+      </label>
+
+      <label class="settings-checkbox">
+        <input type="checkbox" formControlName="aiAssist" />
+        <span>Enable AI assistance in supported modules</span>
+      </label>
+
+      <div class="settings-form__actions">
+        <button type="submit" class="settings-button" [disabled]="isSaving">
+          {{ isSaving ? 'Saving...' : 'Save preferences' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
   <section class="settings-list">
-    <article class="settings-card app-card" *ngFor="let section of sections">
-      <h2>{{ section.title }}</h2>
-      <p>{{ section.description }}</p>
-    </article>
+    <ng-container *appHasRole="['admin']">
+      <article class="settings-card app-card" *ngFor="let section of sections">
+        <h2>{{ section.title }}</h2>
+        <p>{{ section.description }}</p>
+      </article>
+    </ng-container>
   </section>
 </app-page-shell>

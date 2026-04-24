@@ -20,8 +20,9 @@ export class DashboardWidgetService {
     try {
       const parsed = JSON.parse(storedValue) as DashboardWidgetId[];
       const filtered = parsed.filter((id) => this.defaultWidgetIds.includes(id));
+      const merged = this.defaultWidgetIds.filter((id) => !filtered.includes(id));
 
-      return filtered.length ? filtered : this.defaultWidgetIds;
+      return filtered.length ? [...filtered, ...merged] : this.defaultWidgetIds;
     } catch {
       localStorage.removeItem(this.storageKey);
       return this.defaultWidgetIds;

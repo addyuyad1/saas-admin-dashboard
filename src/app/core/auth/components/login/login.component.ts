@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { AuthRole } from '../../models/auth-session.model';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -23,8 +24,8 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  signIn(): void {
-    this.authService.login();
+  signIn(role: AuthRole): void {
+    this.authService.login(role);
     this.navigateToRedirect();
   }
 

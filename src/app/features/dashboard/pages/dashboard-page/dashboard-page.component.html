@@ -108,6 +108,24 @@
           <app-pie-chart [data]="dashboard.usersByPlan"></app-pie-chart>
         </app-dashboard-widget>
       </div>
+
+      <div *ngIf="isWidgetVisible('live-activity')">
+        <app-dashboard-widget
+          title="Live activity"
+          subtitle="RxJS-driven activity feed that simulates real-time workspace updates."
+          (removeWidget)="removeWidget('live-activity')"
+        >
+          <ul class="activity-feed" *ngIf="activityFeed$ | async as activityFeed">
+            <li class="activity-feed__item" *ngFor="let item of activityFeed">
+              <div>
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.detail }}</p>
+              </div>
+              <span class="activity-feed__time">{{ item.timestamp }}</span>
+            </li>
+          </ul>
+        </app-dashboard-widget>
+      </div>
     </section>
   </ng-container>
 </app-page-shell>

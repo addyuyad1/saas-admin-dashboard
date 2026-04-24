@@ -18,3 +18,69 @@
   margin: 0;
   color: var(--text-muted);
 }
+
+.analytics-ai {
+  padding: 1.25rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.analytics-ai__eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--primary-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.analytics-ai h2,
+.analytics-ai h3 {
+  margin: 0;
+}
+
+.analytics-ai__form {
+  display: grid;
+  gap: 1rem;
+}
+
+.analytics-ai__form label {
+  display: grid;
+  gap: 0.45rem;
+  font-weight: 600;
+}
+
+.analytics-ai__form textarea {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  resize: vertical;
+  min-height: 120px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.analytics-ai__button {
+  justify-self: start;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.75rem 1rem;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+.analytics-ai__response {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+
+.analytics-ai__response p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}

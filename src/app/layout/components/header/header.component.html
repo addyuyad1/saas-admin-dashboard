@@ -5,10 +5,25 @@
   </div>
 
   <div class="header__actions" *ngIf="session$ | async as session">
+    <span
+      class="status-pill"
+      [class.status-pill--syncing]="(connectionState$ | async) === 'syncing'"
+    >
+      {{ (connectionState$ | async) === 'syncing' ? 'Syncing' : 'Live' }}
+    </span>
+
+    <span class="status-pill status-pill--neutral" *ngIf="theme$ | async as theme">
+      {{ theme === 'dark' ? 'Dark mode' : 'Light mode' }}
+    </span>
+
     <div class="header__profile">
       <strong>{{ session.user.name }}</strong>
-      <span>{{ session.user.role }}</span>
+      <span>{{ session.user.roleLabel }}</span>
     </div>
+
+    <button type="button" class="header__button" (click)="toggleTheme()">
+      Toggle theme
+    </button>
 
     <button type="button" class="header__button" (click)="signOut()">
       Sign out

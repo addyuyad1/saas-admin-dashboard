@@ -1,6 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { finalize } from 'rxjs';
+import { Observable, finalize } from 'rxjs';
 
+import {
+  LiveActivityItem,
+  RealtimeUpdatesService,
+} from '../../../../core/services/realtime-updates.service';
 import { DashboardData } from '../../models/dashboard-data.model';
 import {
   DASHBOARD_WIDGETS,
@@ -20,6 +24,7 @@ import { DashboardWidgetService } from '../../services/dashboard-widget.service'
 export class DashboardPageComponent implements OnInit {
   readonly availableWidgets = DASHBOARD_WIDGETS;
   readonly skeletonCards = [1, 2, 3];
+  readonly activityFeed$: Observable<LiveActivityItem[]>;
 
   data: DashboardData | null = null;
   errorMessage = '';
@@ -29,7 +34,10 @@ export class DashboardPageComponent implements OnInit {
   constructor(
     private readonly dashboardService: DashboardService,
     private readonly dashboardWidgetService: DashboardWidgetService,
-  ) {}
+    private readonly realtimeUpdatesService: RealtimeUpdatesService,
+  ) {
+    this.activityFeed$ = realtimeUpdatesService.activityFeed$;
+  }
 
   ngOnInit(): void {
     this.visibleWidgetIds = this.dashboardWidgetService.getVisibleWidgetIds();

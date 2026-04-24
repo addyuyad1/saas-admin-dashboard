@@ -2,7 +2,8 @@ export type DashboardWidgetId =
   | 'kpis'
   | 'revenue-trend'
   | 'signup-sources'
-  | 'user-distribution';
+  | 'user-distribution'
+  | 'live-activity';
 
 export interface DashboardWidget {
   id: DashboardWidgetId;
@@ -30,5 +31,10 @@ export const DASHBOARD_WIDGETS: DashboardWidget[] = [
     id: 'user-distribution',
     title: 'Plan distribution',
     subtitle: 'A quick view of how active users are distributed by plan tier.',
+  },
+  {
+    id: 'live-activity',
+    title: 'Live activity',
+    subtitle: 'Simulated real-time operational updates coming from the workspace.',
   },
 ];

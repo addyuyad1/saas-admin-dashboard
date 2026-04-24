@@ -1,3 +1,77 @@
+.settings-preferences {
+  padding: 1.25rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.settings-preferences__header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.settings-preferences__eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--primary-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.settings-preferences h2 {
+  margin: 0 0 0.35rem;
+}
+
+.settings-preferences p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.settings-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.settings-form label {
+  display: grid;
+  gap: 0.45rem;
+  font-weight: 600;
+}
+
+.settings-form input,
+.settings-form select {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 0.95rem;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.settings-checkbox {
+  grid-column: span 2;
+  display: flex !important;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.settings-form__actions {
+  grid-column: span 2;
+}
+
+.settings-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.75rem 1rem;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+}
+
 .settings-list {
   display: grid;
   gap: 1rem;
@@ -15,4 +89,15 @@
   margin: 0;
   color: var(--text-muted);
   line-height: 1.6;
+}
+
+@media (max-width: 840px) {
+  .settings-form {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-checkbox,
+  .settings-form__actions {
+    grid-column: span 1;
+  }
 }

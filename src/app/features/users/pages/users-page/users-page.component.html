@@ -1,20 +1,132 @@
 <app-page-shell
   title="Users"
-  subtitle="Keep user administration isolated in its own feature module so tables, dialogs, and APIs scale independently."
+  subtitle="Admin-only user lifecycle management backed by a mock service layer and clean local state handling."
 >
-  <section class="table-card app-card">
-    <div class="table-card__row table-card__row--head">
-      <span>Name</span>
-      <span>Email</span>
-      <span>Plan</span>
-      <span>Last seen</span>
+  <section class="users-toolbar app-card">
+    <div>
+      <p class="users-toolbar__eyebrow">Directory controls</p>
+      <h2>Workspace users</h2>
+      <p class="users-toolbar__copy">
+        Manage invitations, plans, and roles with a mock enterprise workflow.
+      </p>
     </div>
 
-    <div class="table-card__row" *ngFor="let user of users">
-      <span>{{ user.name }}</span>
-      <span>{{ user.email }}</span>
-      <span>{{ user.plan | fallback:'Trial pending' }}</span>
-      <span>{{ user.lastSeen }}</span>
-    </div>
+    <button
+      *appHasRole="['admin']"
+      type="button"
+      class="users-button"
+      (click)="openCreateForm()"
+    >
+      Add user
+    </button>
   </section>
+
+  <section class="users-state app-card" *ngIf="errorMessage">
+    <p>{{ errorMessage }}</p>
+  </section>
+
+  <section class="users-form app-card" *ngIf="showForm">
+    <header class="users-form__header">
+      <div>
+        <h2>{{ editingUserId ? 'Edit user' : 'Create user' }}</h2>
+        <p>Use the mock form below to manage enterprise user records.</p>
+      </div>
+    </header>
+
+    <form class="users-form__grid" [formGroup]="userForm" (ngSubmit)="saveUser()">
+      <label>
+        <span>Name</span>
+        <input type="text" formControlName="name" />
+      </label>
+
+      <label>
+        <span>Email</span>
+        <input type="email" formControlName="email" />
+      </label>
+
+      <label>
+        <span>Plan</span>
+        <select formControlName="plan">
+          <option value="Starter">Starter</option>
+          <option value="Growth">Growth</option>
+          <option value="Enterprise">Enterprise</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Role</span>
+        <select formControlName="role">
+          <option *ngFor="let role of roles" [value]="role">
+            {{ role | titlecase }}
+          </option>
+        </select>
+      </label>
+
+      <label>
+        <span>Status</span>
+        <select formControlName="status">
+          <option *ngFor="let status of statuses" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </label>
+
+      <div class="users-form__actions">
+        <button type="submit" class="users-button" [disabled]="isSaving">
+          {{ isSaving ? 'Saving...' : editingUserId ? 'Save changes' : 'Create user' }}
+        </button>
+        <button
+          type="button"
+          class="users-button users-button--secondary"
+          (click)="cancelEdit()"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section *ngIf="isLoading" class="users-loading">
+    <app-skeleton-block [height]="280"></app-skeleton-block>
+  </section>
+
+  <ng-container *ngIf="!isLoading">
+    <section class="table-card app-card" *ngIf="users$ | async as users">
+      <div class="table-card__row table-card__row--head">
+        <span>Name</span>
+        <span>Email</span>
+        <span>Plan</span>
+        <span>Role</span>
+        <span>Status</span>
+        <span>Last seen</span>
+        <span *appHasRole="['admin']">Actions</span>
+      </div>
+
+      <div class="table-card__row" *ngFor="let user of users">
+        <span>{{ user.name }}</span>
+        <span>{{ user.email }}</span>
+        <span>{{ user.plan | fallback:'Trial pending' }}</span>
+        <span>{{ user.role | titlecase }}</span>
+        <span>{{ user.status }}</span>
+        <span>{{ user.lastSeen }}</span>
+        <span class="table-card__actions" *appHasRole="['admin']">
+          <button
+            type="button"
+            class="users-link"
+            (click)="startEdit(user)"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            class="users-link users-link--danger"
+            (click)="deleteUser(user.id)"
+            [disabled]="isDeleting"
+          >
+            Delete
+          </button>
+        </span>
+      </div>
+    </section>
+  </ng-container>
 </app-page-shell>

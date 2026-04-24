@@ -7,8 +7,23 @@
       routing, and HTTP concerns before integrating a real identity provider.
     </p>
 
-    <button appAutofocus class="login-panel__button" type="button" (click)="signIn()">
-      Continue as Demo Admin
-    </button>
+    <div class="login-panel__actions">
+      <button
+        appAutofocus
+        class="login-panel__button"
+        type="button"
+        (click)="signIn('admin')"
+      >
+        Continue as Admin
+      </button>
+
+      <button
+        class="login-panel__button login-panel__button--secondary"
+        type="button"
+        (click)="signIn('user')"
+      >
+        Continue as User
+      </button>
+    </div>
   </div>
 </section>

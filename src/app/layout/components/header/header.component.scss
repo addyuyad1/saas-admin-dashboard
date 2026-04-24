@@ -47,6 +47,16 @@
   font-weight: 600;
 }
 
+.status-pill--neutral {
+  background: var(--surface-muted);
+  color: var(--text);
+}
+
+.status-pill--syncing {
+  background: #fff4df;
+  color: #9a5c00;
+}
+
 @media (max-width: 720px) {
   .header {
     margin: 1rem 1rem 0;

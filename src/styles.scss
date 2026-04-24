@@ -15,6 +15,20 @@
   --radius-sm: 12px;
 }
 
+:root[data-theme='dark'] {
+  --bg: #0e1728;
+  --surface: #152238;
+  --surface-muted: #1d2b45;
+  --border: #2a3a59;
+  --text: #edf3ff;
+  --text-muted: #a3b4d1;
+  --primary: #5a9bff;
+  --primary-dark: #a7cbff;
+  --success: #46bb74;
+  --warning: #f3a84b;
+  --shadow: 0 16px 40px rgba(5, 10, 20, 0.36);
+}
+
 *,
 *::before,
 *::after {
@@ -32,6 +46,12 @@ body {
 
 body {
   min-width: 320px;
+  background: var(--bg);
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+:root[data-theme='dark'] body {
+  background: linear-gradient(180deg, #0d1524 0%, #122039 45%, #0e1728 100%);
 }
 
 button,

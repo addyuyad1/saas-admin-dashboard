@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
 
 import { AnalyticsKpi } from '../../models/analytics-kpi.model';
 import { AnalyticsService } from '../../services/analytics.service';
@@ -11,9 +13,34 @@ import { AnalyticsService } from '../../services/analytics.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnalyticsPageComponent {
-  readonly kpis: AnalyticsKpi[];
+  private readonly formBuilder = inject(FormBuilder);
 
-  constructor(private readonly analyticsService: AnalyticsService) {
+  readonly kpis: AnalyticsKpi[];
+  insightResponse = '';
+  isGenerating = false;
+
+  readonly insightForm = this.formBuilder.nonNullable.group({
+    query: ['What changed in growth this week?', [Validators.required, Validators.minLength(8)]],
+  });
+
+  constructor(
+    private readonly analyticsService: AnalyticsService,
+  ) {
     this.kpis = analyticsService.getKpis();
+  }
+
+  generateInsight(): void {
+    if (this.insightForm.invalid) {
+      this.insightForm.markAllAsTouched();
+      return;
+    }
+
+    this.isGenerating = true;
+    this.analyticsService
+      .generateInsight(this.insightForm.getRawValue().query)
+      .pipe(finalize(() => (this.isGenerating = false)))
+      .subscribe((response) => {
+        this.insightResponse = response;
+      });
   }
 }

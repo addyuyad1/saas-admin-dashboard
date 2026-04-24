@@ -1,12 +1,41 @@
 <app-page-shell
   title="Analytics"
-  subtitle="Analytics stays lazy loaded and self-contained so charts, facades, and query models can evolve without leaking into other domains."
+  subtitle="Analytics stays lazy loaded and self-contained so charts, insights, and future AI workflows can evolve without leaking into other domains."
 >
   <section class="analytics-grid">
     <article class="analytics-card app-card" *ngFor="let kpi of kpis">
       <span class="status-pill">{{ kpi.label }}</span>
       <strong>{{ kpi.value }}</strong>
       <p>{{ kpi.insight }}</p>
+    </article>
+  </section>
+
+  <section class="analytics-ai app-card">
+    <div class="analytics-ai__header">
+      <div>
+        <p class="analytics-ai__eyebrow">AI insights</p>
+        <h2>Ask for a quick summary</h2>
+      </div>
+    </div>
+
+    <form class="analytics-ai__form" [formGroup]="insightForm" (ngSubmit)="generateInsight()">
+      <label>
+        <span>Question</span>
+        <textarea
+          rows="4"
+          formControlName="query"
+          placeholder="Ask a mock analytics question..."
+        ></textarea>
+      </label>
+
+      <button type="submit" class="analytics-ai__button" [disabled]="isGenerating">
+        {{ isGenerating ? 'Generating...' : 'Generate insight' }}
+      </button>
+    </form>
+
+    <article class="analytics-ai__response" *ngIf="insightResponse">
+      <h3>Generated insight</h3>
+      <p>{{ insightResponse }}</p>
     </article>
   </section>
 </app-page-shell>
