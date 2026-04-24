@@ -1,0 +1,11 @@
+{
+  "name": "saas-admin-dashboard",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Scaffolded Angular SaaS admin dashboard structure",
+  "scripts": {
+    "start": "echo \"Add Angular CLI scripts here\"",
+    "build": "echo \"Add Angular CLI scripts here\"",
+    "test": "echo \"Add Angular CLI scripts here\""
+  }
+}
