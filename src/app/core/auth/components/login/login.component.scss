@@ -8,6 +8,9 @@
 .login-panel {
   width: min(100%, 480px);
   padding: 2.5rem;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 250, 255, 0.94) 100%);
 }
 
 .login-panel__eyebrow {

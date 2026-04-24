@@ -25,7 +25,7 @@
           <strong>{{ session.user.name }}</strong>
           <span>{{ session.user.email }}</span>
         </span>
-        <span class="header__caret">▾</span>
+        <span class="header__caret" aria-hidden="true"></span>
       </button>
 
       <div class="header__dropdown app-card" *ngIf="isMenuOpen" role="menu">

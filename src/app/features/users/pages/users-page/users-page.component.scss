@@ -24,6 +24,7 @@
 .users-toolbar h2,
 .users-form h2 {
   margin: 0 0 0.35rem;
+  font-size: 1.25rem;
 }
 
 .users-toolbar__copy,
@@ -37,6 +38,23 @@
 .users-form {
   display: grid;
   gap: 1rem;
+}
+
+.users-toolbar,
+.users-form,
+.table-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.users-toolbar::before,
+.users-form::before,
+.table-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 30%);
+  pointer-events: none;
 }
 
 .users-form__grid {
@@ -53,11 +71,8 @@
 
 .users-form input,
 .users-form select {
-  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 0.8rem 0.95rem;
-  background: var(--surface);
-  color: var(--text);
 }
 
 .users-form__actions {
@@ -66,21 +81,6 @@
   gap: 0.75rem;
   align-items: center;
   grid-column: 1 / -1;
-}
-
-.users-button {
-  border: 0;
-  border-radius: 999px;
-  padding: 0.75rem 1rem;
-  background: var(--primary);
-  color: #fff;
-  font-weight: 700;
-}
-
-.users-button--secondary {
-  border: 1px solid var(--border);
-  background: var(--surface-muted);
-  color: var(--text);
 }
 
 .users-loading {
@@ -98,15 +98,23 @@
   padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--border);
   align-items: center;
+  transition: background-color 160ms ease;
 }
 
 .table-card__row--head {
   background: var(--surface-muted);
   font-weight: 700;
+  font-size: 0.84rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .table-card__row:last-child {
   border-bottom: 0;
+}
+
+.table-card__row:not(.table-card__row--head):hover {
+  background: color-mix(in srgb, var(--surface-soft) 82%, white);
 }
 
 .table-card__actions {
@@ -121,6 +129,11 @@
   padding: 0;
   color: var(--primary);
   font-weight: 700;
+  transition: transform 160ms ease, color 160ms ease;
+}
+
+.users-link:hover {
+  transform: translateX(1px);
 }
 
 .users-link--danger {
