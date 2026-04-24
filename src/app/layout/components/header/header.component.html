@@ -12,21 +12,42 @@
       {{ (connectionState$ | async) === 'syncing' ? 'Syncing' : 'Live' }}
     </span>
 
-    <span class="status-pill status-pill--neutral" *ngIf="theme$ | async as theme">
-      {{ theme === 'dark' ? 'Dark mode' : 'Light mode' }}
-    </span>
+    <div class="header__user-menu">
+      <button
+        type="button"
+        class="header__user-button"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="isMenuOpen"
+        aria-haspopup="menu"
+      >
+        <span class="header__avatar">{{ getInitials(session.user) }}</span>
+        <span class="header__profile">
+          <strong>{{ session.user.name }}</strong>
+          <span>{{ session.user.email }}</span>
+        </span>
+        <span class="header__caret">▾</span>
+      </button>
 
-    <div class="header__profile">
-      <strong>{{ session.user.name }}</strong>
-      <span>{{ session.user.roleLabel }}</span>
+      <div class="header__dropdown app-card" *ngIf="isMenuOpen" role="menu">
+        <div class="header__dropdown-meta">
+          <strong>{{ session.user.name }}</strong>
+          <span>{{ session.user.roleLabel }}</span>
+        </div>
+
+        <button type="button" class="header__dropdown-item" (click)="openProfile()">
+          Profile
+        </button>
+        <button type="button" class="header__dropdown-item" (click)="openSettings()">
+          Settings
+        </button>
+        <button
+          type="button"
+          class="header__dropdown-item header__dropdown-item--danger"
+          (click)="signOut()"
+        >
+          Logout
+        </button>
+      </div>
     </div>
-
-    <button type="button" class="header__button" (click)="toggleTheme()">
-      Toggle theme
-    </button>
-
-    <button type="button" class="header__button" (click)="signOut()">
-      Sign out
-    </button>
   </div>
 </header>

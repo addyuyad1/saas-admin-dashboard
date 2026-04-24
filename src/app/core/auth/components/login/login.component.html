@@ -1,29 +1,56 @@
 <section class="login-shell">
   <div class="login-panel app-card">
-    <p class="login-panel__eyebrow">Enterprise starter</p>
+    <p class="login-panel__eyebrow">Secure access</p>
     <h1>Sign in to the admin dashboard</h1>
     <p class="login-panel__copy">
-      This scaffold uses a mock auth flow so you can wire enterprise structure,
-      routing, and HTTP concerns before integrating a real identity provider.
+      Use the mock credentials below to access the protected workspace.
     </p>
 
-    <div class="login-panel__actions">
-      <button
-        appAutofocus
-        class="login-panel__button"
-        type="button"
-        (click)="signIn('admin')"
-      >
-        Continue as Admin
-      </button>
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="submit()">
+      <div class="login-form__hint app-card">
+        <strong>Mock accounts</strong>
+        <span><code>admin@saas.com</code> / <code>Admin@123</code></span>
+        <span><code>user@saas.com</code> / <code>User@123</code></span>
+      </div>
+
+      <label class="login-form__field">
+        <span>Email</span>
+        <input
+          appAutofocus
+          type="email"
+          formControlName="email"
+          placeholder="admin@saas.com"
+        />
+        <small *ngIf="emailControl.touched && emailControl.hasError('required')">
+          Email is required.
+        </small>
+        <small *ngIf="emailControl.touched && emailControl.hasError('email')">
+          Enter a valid email address.
+        </small>
+      </label>
+
+      <label class="login-form__field">
+        <span>Password</span>
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="Enter your password"
+        />
+        <small *ngIf="passwordControl.touched && passwordControl.hasError('required')">
+          Password is required.
+        </small>
+      </label>
+
+      <p class="login-form__error" *ngIf="errorMessage">{{ errorMessage }}</p>
 
       <button
-        class="login-panel__button login-panel__button--secondary"
-        type="button"
-        (click)="signIn('user')"
+        class="login-panel__button"
+        type="submit"
+        [disabled]="isSubmitting"
       >
-        Continue as User
+        <span class="login-panel__spinner" *ngIf="isSubmitting" aria-hidden="true"></span>
+        {{ isSubmitting ? 'Signing in...' : 'Login' }}
       </button>
-    </div>
+    </form>
   </div>
 </section>

@@ -1,13 +1,58 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  delay,
+  map,
+  mergeMap,
+  of,
+  timer,
+} from 'rxjs';
 
-import { AuthRole, AuthSession } from '../models/auth-session.model';
+import { AuthRole, AuthSession, AuthUser } from '../models/auth-session.model';
+
+interface MockAuthAccount {
+  email: string;
+  password: string;
+  session: AuthSession;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly storageKey = 'saas-admin-dashboard.auth-session';
+  // This catalog keeps authentication mockable while preserving a realistic service contract.
+  private readonly mockAccounts: MockAuthAccount[] = [
+    {
+      email: 'admin@saas.com',
+      password: 'Admin@123',
+      session: {
+        token: 'mock-enterprise-access-token',
+        user: {
+          id: 'admin-001',
+          name: 'Admin User',
+          email: 'admin@saas.com',
+          role: 'admin',
+          roleLabel: 'Administrator',
+        },
+      },
+    },
+    {
+      email: 'user@saas.com',
+      password: 'User@123',
+      session: {
+        token: 'mock-standard-access-token',
+        user: {
+          id: 'user-014',
+          name: 'Product User',
+          email: 'user@saas.com',
+          role: 'user',
+          roleLabel: 'Workspace User',
+        },
+      },
+    },
+  ];
   private readonly sessionSubject = new BehaviorSubject<AuthSession | null>(
     this.readSession(),
   );
@@ -22,6 +67,10 @@ export class AuthService {
     return this.sessionSubject.value?.token ?? null;
   }
 
+  getCurrentUser(): AuthUser | null {
+    return this.sessionSubject.value?.user ?? null;
+  }
+
   getCurrentRole(): AuthRole | null {
     return this.sessionSubject.value?.user.role ?? null;
   }
@@ -31,35 +80,29 @@ export class AuthService {
     return !!currentRole && roles.includes(currentRole);
   }
 
-  login(role: AuthRole = 'admin'): void {
-    const session = this.buildSession(role);
-    this.persistSession(session);
-  }
+  login(email: string, password: string): Observable<AuthSession> {
+    const normalizedEmail = email.trim().toLowerCase();
+    const matchedAccount = this.mockAccounts.find(
+      (account) =>
+        account.email.toLowerCase() === normalizedEmail &&
+        account.password === password,
+    );
 
-  private buildSession(role: AuthRole): AuthSession {
-    if (role === 'user') {
-      return {
-        token: 'mock-standard-access-token',
-        user: {
-          id: 'user-014',
-          name: 'Taylor Morgan',
-          email: 'taylor@saas-dashboard.local',
-          role: 'user',
-          roleLabel: 'Operations User',
-        },
-      };
+    if (!matchedAccount) {
+      return timer(700).pipe(
+        mergeMap(() => {
+          throw new Error('Invalid email or password. Please try again.');
+        }),
+      );
     }
 
-    return {
-      token: 'mock-enterprise-access-token',
-      user: {
-        id: 'admin-001',
-        name: 'Demo Admin',
-        email: 'admin@saas-dashboard.local',
-        role: 'admin',
-        roleLabel: 'Platform Administrator',
-      },
-    };
+    return of(matchedAccount.session).pipe(
+      delay(900),
+      map((session) => {
+        this.persistSession(session);
+        return session;
+      }),
+    );
   }
 
   logout(): void {

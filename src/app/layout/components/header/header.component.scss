@@ -30,34 +30,89 @@
   flex-wrap: wrap;
 }
 
+.header__user-menu {
+  position: relative;
+}
+
+.header__user-button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  padding: 0.4rem 0.5rem 0.4rem 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.header__avatar {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary), #7dc2ff);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 .header__profile {
   display: grid;
   gap: 0.15rem;
-  text-align: right;
+  text-align: left;
 }
 
 .header__profile span {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
 }
 
-.header__button {
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface-muted);
-  padding: 0.58rem 0.9rem;
+.header__caret {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.header__dropdown {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  min-width: 220px;
+  padding: 0.6rem;
+  display: grid;
+  gap: 0.2rem;
+  z-index: 20;
+}
+
+.header__dropdown-meta {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0.65rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.3rem;
+}
+
+.header__dropdown-meta span {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.header__dropdown-item {
+  border: 0;
+  background: transparent;
+  text-align: left;
+  border-radius: 0.8rem;
+  padding: 0.7rem 0.75rem;
   font-weight: 600;
-  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
-}
-
-.header__button:hover {
-  transform: translateY(-1px);
-  background: color-mix(in srgb, var(--surface-muted) 78%, var(--primary) 22%);
-}
-
-.status-pill--neutral {
-  background: var(--surface-muted);
   color: var(--text);
+}
+
+.header__dropdown-item:hover {
+  background: var(--surface-muted);
+}
+
+.header__dropdown-item--danger {
+  color: #b91c1c;
 }
 
 .status-pill--syncing {
@@ -74,5 +129,16 @@
   .header__actions {
     width: 100%;
     justify-content: flex-start;
+  }
+
+  .header__user-button {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .header__dropdown {
+    left: 0;
+    right: 0;
+    min-width: 0;
   }
 }
