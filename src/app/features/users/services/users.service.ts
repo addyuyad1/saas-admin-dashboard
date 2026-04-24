@@ -3,7 +3,9 @@ import { BehaviorSubject, Observable, delay, map, of, tap } from 'rxjs';
 
 import { UserDraft, UserSummary } from '../models/user-summary.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UsersService {
   private readonly usersSubject = new BehaviorSubject<UserSummary[]>([
     {

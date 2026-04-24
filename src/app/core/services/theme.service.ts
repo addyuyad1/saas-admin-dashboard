@@ -39,6 +39,15 @@ export class ThemeService {
   }
 
   private applyTheme(theme: ThemeMode): void {
-    this.document.documentElement.setAttribute('data-theme', theme);
+    const rootElement = this.document.documentElement;
+
+    rootElement.setAttribute('data-theme', theme);
+    rootElement.classList.remove('theme-light', 'theme-dark');
+    rootElement.classList.add(`theme-${theme}`);
+
+    if (this.document.body) {
+      this.document.body.classList.remove('theme-light', 'theme-dark');
+      this.document.body.classList.add(`theme-${theme}`);
+    }
   }
 }

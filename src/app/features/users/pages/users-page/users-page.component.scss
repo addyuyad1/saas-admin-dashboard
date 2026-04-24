@@ -1,4 +1,5 @@
 .users-toolbar,
+.users-filters,
 .users-form,
 .users-state {
   padding: 1.25rem;
@@ -35,12 +36,20 @@
   line-height: 1.6;
 }
 
+.users-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 0.8fr)) auto;
+  gap: 0.9rem;
+  align-items: end;
+}
+
 .users-form {
   display: grid;
   gap: 1rem;
 }
 
 .users-toolbar,
+.users-filters,
 .users-form,
 .table-card {
   position: relative;
@@ -48,12 +57,14 @@
 }
 
 .users-toolbar::before,
+.users-filters::before,
 .users-form::before,
 .table-card::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 30%);
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 30%);
   pointer-events: none;
 }
 
@@ -63,13 +74,26 @@
   gap: 1rem;
 }
 
+.users-field,
 .users-form label {
   display: grid;
   gap: 0.45rem;
   font-weight: 600;
 }
 
+.users-field span {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+}
+
+.users-filters__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .users-form input,
+.users-field input,
+.users-field select,
 .users-form select {
   border-radius: var(--radius-sm);
   padding: 0.8rem 0.95rem;
@@ -89,6 +113,15 @@
 
 .table-card {
   overflow: hidden;
+}
+
+.table-card__toolbar {
+  padding: 1rem 1.25rem 0.25rem;
+}
+
+.table-card__toolbar h2 {
+  margin: 0.15rem 0 0;
+  font-size: 1.15rem;
 }
 
 .table-card__row {
@@ -141,8 +174,13 @@
 }
 
 @media (max-width: 980px) {
+  .users-filters,
   .users-form__grid {
     grid-template-columns: 1fr;
+  }
+
+  .users-filters__actions {
+    justify-content: stretch;
   }
 }
 

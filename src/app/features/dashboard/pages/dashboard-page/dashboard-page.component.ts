@@ -1,18 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Observable, finalize } from 'rxjs';
+import { EMPTY, Observable, catchError, delay, of, shareReplay, take } from 'rxjs';
 
 import {
   LiveActivityItem,
   RealtimeUpdatesService,
 } from '../../../../core/services/realtime-updates.service';
 import { DashboardData } from '../../models/dashboard-data.model';
-import {
-  DASHBOARD_WIDGETS,
-  DashboardWidget,
-  DashboardWidgetId,
-} from '../../models/dashboard-widget.model';
 import { DashboardService } from '../../services/dashboard.service';
-import { DashboardWidgetService } from '../../services/dashboard-widget.service';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -22,25 +16,24 @@ import { DashboardWidgetService } from '../../services/dashboard-widget.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPageComponent implements OnInit {
-  readonly availableWidgets = DASHBOARD_WIDGETS;
   readonly skeletonCards = [1, 2, 3, 4];
   readonly activityFeed$: Observable<LiveActivityItem[]>;
 
-  data: DashboardData | null = null;
+  dashboardData$!: Observable<DashboardData>;
   errorMessage = '';
+  insightResponse =
+    'Ask for a revenue, growth, or user trend summary to surface a quick executive-style insight.';
   isLoading = true;
-  visibleWidgetIds: DashboardWidgetId[] = [];
+  isInsightLoading = false;
 
   constructor(
     private readonly dashboardService: DashboardService,
-    private readonly dashboardWidgetService: DashboardWidgetService,
-    private readonly realtimeUpdatesService: RealtimeUpdatesService,
+    realtimeUpdatesService: RealtimeUpdatesService,
   ) {
     this.activityFeed$ = realtimeUpdatesService.activityFeed$;
   }
 
   ngOnInit(): void {
-    this.visibleWidgetIds = this.dashboardWidgetService.getVisibleWidgetIds();
     this.loadDashboard();
   }
 
@@ -48,35 +41,52 @@ export class DashboardPageComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.dashboardService
-      .getDashboardData()
-      .pipe(finalize(() => (this.isLoading = false)))
-      .subscribe({
-        next: (data) => {
-          this.data = data;
-        },
-        error: (error: Error) => {
-          this.data = null;
-          this.errorMessage = error.message;
-        },
+    this.dashboardData$ = this.dashboardService.getDashboardData().pipe(
+      catchError((error: Error) => {
+        this.errorMessage = error.message;
+        this.isLoading = false;
+        return EMPTY;
+      }),
+      shareReplay({ bufferSize: 1, refCount: true }),
+    );
+
+    this.dashboardData$.pipe(take(1)).subscribe(() => {
+      this.isLoading = false;
+    });
+  }
+
+  generateInsight(prompt: string): void {
+    const normalizedPrompt = prompt.trim();
+
+    if (!normalizedPrompt) {
+      return;
+    }
+
+    this.isInsightLoading = true;
+
+    of(this.buildInsightResponse(normalizedPrompt))
+      .pipe(delay(350), take(1))
+      .subscribe((response) => {
+        this.insightResponse = response;
+        this.isInsightLoading = false;
       });
   }
 
-  removeWidget(widgetId: DashboardWidgetId): void {
-    this.visibleWidgetIds = this.dashboardWidgetService.removeWidget(widgetId);
-  }
+  private buildInsightResponse(prompt: string): string {
+    const normalizedPrompt = prompt.toLowerCase();
 
-  restoreWidget(widgetId: DashboardWidgetId): void {
-    this.visibleWidgetIds = this.dashboardWidgetService.restoreWidget(widgetId);
-  }
+    if (normalizedPrompt.includes('revenue')) {
+      return 'Revenue remains healthy at $54k, with current growth suggesting the team should prioritize expansion accounts and high-intent renewals this week.';
+    }
 
-  isWidgetVisible(widgetId: DashboardWidgetId): boolean {
-    return this.visibleWidgetIds.includes(widgetId);
-  }
+    if (normalizedPrompt.includes('user')) {
+      return 'User volume is stable at 1,240 accounts. The strongest opportunity is converting active Growth accounts into higher-retention enterprise cohorts.';
+    }
 
-  get hiddenWidgets(): DashboardWidget[] {
-    return this.availableWidgets.filter(
-      (widget) => !this.visibleWidgetIds.includes(widget.id),
-    );
+    if (normalizedPrompt.includes('session')) {
+      return 'Session volume is strong at 18,400, which indicates healthy engagement. Review high-traffic segments to confirm product adoption is translating into revenue expansion.';
+    }
+
+    return 'Growth is positive at 12%, which points to a healthy operating baseline. The most practical next step is pairing user activity trends with account expansion opportunities in the users workspace.';
   }
 }

@@ -1,8 +1,62 @@
 <header class="header app-card">
-  <div>
+  <div class="header__title">
     <p class="header__eyebrow">Admin workspace</p>
     <h1>Enterprise operations dashboard</h1>
   </div>
+
+  <form class="header__search" (ngSubmit)="submitGlobalSearch()">
+    <svg
+      class="header__search-icon"
+      viewBox="0 0 20 20"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="8.5" cy="8.5" r="5.5"></circle>
+      <path d="M12.5 12.5 17 17"></path>
+    </svg>
+
+    <input
+      type="search"
+      [formControl]="searchControl"
+      placeholder="Search users, roles, or accounts"
+      aria-label="Search users"
+      (focus)="openSearch()"
+    />
+
+    <button
+      *ngIf="searchControl.value"
+      type="button"
+      class="header__search-clear"
+      (click)="clearSearch()"
+      aria-label="Clear search"
+    >
+      Clear
+    </button>
+
+    <div class="header__search-dropdown app-card" *ngIf="isSearchOpen">
+      <ng-container *ngIf="searchResults$ | async as results">
+        <div class="header__search-label">Matching users</div>
+
+        <button
+          *ngFor="let user of results"
+          type="button"
+          class="header__search-item"
+          (click)="selectSearchResult(user)"
+        >
+          <span class="header__search-avatar">{{ getInitials(user) }}</span>
+          <span class="header__search-meta">
+            <strong>{{ user.name }}</strong>
+            <span>{{ user.email }}</span>
+          </span>
+          <span class="status-pill">{{ user.role | titlecase }}</span>
+        </button>
+
+        <div class="header__search-empty" *ngIf="!results.length">
+          No matching users found for this query.
+        </div>
+      </ng-container>
+    </div>
+  </form>
 
   <div class="header__actions" *ngIf="session$ | async as session">
     <span
@@ -11,6 +65,74 @@
     >
       {{ (connectionState$ | async) === 'syncing' ? 'Syncing' : 'Live' }}
     </span>
+
+    <div class="header__notifications">
+      <button
+        type="button"
+        class="header__icon-button"
+        (click)="toggleNotifications()"
+        [attr.aria-expanded]="isNotificationsOpen"
+        aria-haspopup="menu"
+        aria-label="Open notifications"
+      >
+        <svg
+          class="header__icon"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M12 4a4 4 0 0 0-4 4v1.2c0 1.2-.4 2.4-1.2 3.3L5.5 14a1 1 0 0 0 .8 1.7h11.4a1 1 0 0 0 .8-1.7l-1.3-1.5A4.9 4.9 0 0 1 16 9.2V8a4 4 0 0 0-4-4Z"
+          ></path>
+          <path d="M10 18a2 2 0 0 0 4 0"></path>
+        </svg>
+
+        <span
+          class="header__notification-badge"
+          *ngIf="(unreadCount$ | async) as unreadCount"
+        >
+          {{ unreadCount }}
+        </span>
+      </button>
+
+      <div class="header__panel app-card" *ngIf="isNotificationsOpen" role="menu">
+        <div class="header__panel-header">
+          <div>
+            <strong>Notifications</strong>
+            <span>Recent workspace events</span>
+          </div>
+
+          <button
+            type="button"
+            class="header__panel-link"
+            (click)="markAllNotificationsAsRead()"
+          >
+            Mark all read
+          </button>
+        </div>
+
+        <ng-container *ngIf="notifications$ | async as notifications">
+          <button
+            *ngFor="let notification of notifications"
+            type="button"
+            class="header__notification-item"
+            [class.header__notification-item--unread]="!notification.read"
+            (click)="markNotificationAsRead(notification.id)"
+          >
+            <span
+              class="header__notification-tone"
+              [class.header__notification-tone--warning]="notification.level === 'warning'"
+              [class.header__notification-tone--success]="notification.level === 'success'"
+            ></span>
+            <span class="header__notification-copy">
+              <strong>{{ notification.title }}</strong>
+              <span>{{ notification.detail }}</span>
+            </span>
+            <span class="header__notification-time">{{ notification.timestamp }}</span>
+          </button>
+        </ng-container>
+      </div>
+    </div>
 
     <div class="header__user-menu">
       <button
@@ -39,6 +161,11 @@
         </button>
         <button type="button" class="header__dropdown-item" (click)="openSettings()">
           Settings
+        </button>
+        <button type="button" class="header__dropdown-item" (click)="toggleTheme()">
+          <ng-container *ngIf="theme$ | async as theme">
+            Switch to {{ theme === 'dark' ? 'light' : 'dark' }} mode
+          </ng-container>
         </button>
         <button
           type="button"

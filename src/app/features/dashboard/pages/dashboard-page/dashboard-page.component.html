@@ -1,20 +1,18 @@
 <app-page-shell
   title="Dashboard"
-  subtitle="A dense, responsive operations view with clearer hierarchy, calmer UI patterns, and reusable data surfaces."
+  subtitle="Track the core SaaS KPIs from one clean, responsive dashboard view."
 >
   <section class="dashboard-hero app-card">
     <div>
       <p class="dashboard-hero__eyebrow">Executive summary</p>
-      <h2>Operations snapshot</h2>
+      <h2>Performance snapshot</h2>
       <p class="dashboard-hero__copy">
-        Track growth, revenue, user movement, and high-priority workspace updates from one compact surface.
+        Monitor users, revenue, growth, and sessions with a reliable observable
+        data flow and clear loading states.
       </p>
     </div>
 
     <div class="dashboard-hero__actions">
-      <span class="status-pill" *ngIf="data">
-        Updated {{ data.lastUpdated }}
-      </span>
       <button type="button" class="dashboard-button" (click)="loadDashboard()">
         Refresh data
       </button>
@@ -25,15 +23,8 @@
     <div class="dashboard-summary-grid">
       <app-skeleton-block
         *ngFor="let item of skeletonCards"
-        [height]="150"
+        [height]="160"
       ></app-skeleton-block>
-    </div>
-
-    <div class="dashboard-grid">
-      <app-skeleton-block [height]="360"></app-skeleton-block>
-      <app-skeleton-block [height]="360"></app-skeleton-block>
-      <app-skeleton-block [height]="360"></app-skeleton-block>
-      <app-skeleton-block [height]="360"></app-skeleton-block>
     </div>
   </section>
 
@@ -45,89 +36,60 @@
     </button>
   </section>
 
-  <ng-container *ngIf="!isLoading && !errorMessage && data as dashboard">
-    <section class="dashboard-summary">
-      <header class="dashboard-summary__header">
-        <div>
-          <p class="dashboard-summary__eyebrow">Performance</p>
-          <h2>Key metrics</h2>
+  <ng-container *ngIf="!isLoading && !errorMessage">
+    <ng-container *ngIf="dashboardData$ | async as data; else emptyDashboard">
+      <section class="dashboard-summary">
+        <header class="dashboard-summary__header">
+          <div>
+            <p class="dashboard-summary__eyebrow">Performance</p>
+            <h2>Key metrics</h2>
+          </div>
+        </header>
+
+        <div class="dashboard-summary-grid">
+          <article class="kpi-card app-card">
+            <p class="kpi-card__label">Users</p>
+            <strong>{{ data.users | number }}</strong>
+            <p class="kpi-card__helper">Active customer accounts</p>
+          </article>
+
+          <article class="kpi-card app-card">
+            <p class="kpi-card__label">Revenue</p>
+            <strong>{{ data.revenue | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+            <p class="kpi-card__helper">Monthly recurring revenue</p>
+          </article>
+
+          <article class="kpi-card app-card">
+            <p class="kpi-card__label">Growth</p>
+            <strong>{{ data.growth }}%</strong>
+            <p class="kpi-card__helper">Month-over-month expansion</p>
+          </article>
+
+          <article class="kpi-card app-card">
+            <p class="kpi-card__label">Sessions</p>
+            <strong>{{ data.sessions | number }}</strong>
+            <p class="kpi-card__helper">User sessions this month</p>
+          </article>
         </div>
-      </header>
+      </section>
 
-      <div class="dashboard-summary-grid">
-        <app-kpi-card
-          *ngFor="let stat of dashboard.kpis"
-          [stat]="stat"
-        ></app-kpi-card>
-      </div>
-    </section>
+      <section class="dashboard-grid">
+        <article class="dashboard-panel app-card">
+          <header class="dashboard-panel__header">
+            <div>
+              <p class="dashboard-summary__eyebrow">Activity</p>
+              <h2>Recent activity</h2>
+            </div>
+          </header>
 
-    <section class="widget-library app-card">
-      <div>
-        <p class="widget-library__eyebrow">Hidden widgets</p>
-        <h2>Widget library</h2>
-      </div>
-
-      <div class="widget-library__actions" *ngIf="hiddenWidgets.length; else allWidgetsVisible">
-        <button
-          *ngFor="let widget of hiddenWidgets"
-          type="button"
-          class="dashboard-button dashboard-button--secondary"
-          (click)="restoreWidget(widget.id)"
-        >
-          Add {{ widget.title }}
-        </button>
-      </div>
-
-      <ng-template #allWidgetsVisible>
-        <app-empty-state
-          title="All dashboard widgets are active"
-          description="Hide any widget from its card actions if you want to simplify this view."
-        ></app-empty-state>
-      </ng-template>
-    </section>
-
-    <section class="dashboard-grid">
-      <div class="dashboard-grid__wide" *ngIf="isWidgetVisible('revenue-trend')">
-        <app-dashboard-widget
-          title="Revenue trend"
-          subtitle="Recurring revenue and user momentum over the last six reporting periods."
-          (removeWidget)="removeWidget('revenue-trend')"
-        >
-          <app-line-chart [data]="dashboard.revenueSeries"></app-line-chart>
-        </app-dashboard-widget>
-      </div>
-
-      <div *ngIf="isWidgetVisible('signup-sources')">
-        <app-dashboard-widget
-          title="Signup sources"
-          subtitle="New account creation grouped by acquisition channel."
-          (removeWidget)="removeWidget('signup-sources')"
-        >
-          <app-bar-chart [data]="dashboard.signupsBySource"></app-bar-chart>
-        </app-dashboard-widget>
-      </div>
-
-      <div *ngIf="isWidgetVisible('user-distribution')">
-        <app-dashboard-widget
-          title="Plan distribution"
-          subtitle="Active users grouped by subscription tier."
-          (removeWidget)="removeWidget('user-distribution')"
-        >
-          <app-pie-chart [data]="dashboard.usersByPlan"></app-pie-chart>
-        </app-dashboard-widget>
-      </div>
-
-      <div *ngIf="isWidgetVisible('recent-activity')">
-        <app-dashboard-widget
-          title="Live activity"
-          subtitle="RxJS-driven activity feed that simulates real-time workspace updates."
-          (removeWidget)="removeWidget('recent-activity')"
-        >
           <ng-container *ngIf="activityFeed$ | async as activityFeed">
             <ul class="activity-feed" *ngIf="activityFeed.length; else emptyActivity">
               <li class="activity-feed__item" *ngFor="let item of activityFeed">
-                <span class="activity-feed__badge" [class.activity-feed__badge--warning]="item.level === 'warning'" [class.activity-feed__badge--success]="item.level === 'success'"></span>
+                <span
+                  class="activity-feed__badge"
+                  [class.activity-feed__badge--warning]="item.level === 'warning'"
+                  [class.activity-feed__badge--success]="item.level === 'success'"
+                ></span>
                 <div class="activity-feed__content">
                   <strong>{{ item.title }}</strong>
                   <p>{{ item.detail }}</p>
@@ -136,44 +98,56 @@
               </li>
             </ul>
           </ng-container>
+        </article>
 
-          <ng-template #emptyActivity>
-            <app-empty-state
-              title="No recent activity"
-              description="Live workspace events will appear here when new actions are detected."
-            ></app-empty-state>
-          </ng-template>
-        </app-dashboard-widget>
-      </div>
+        <article class="dashboard-panel app-card">
+          <header class="dashboard-panel__header">
+            <div>
+              <p class="dashboard-summary__eyebrow">AI assistant</p>
+              <h2>Insights panel</h2>
+            </div>
+          </header>
 
-      <div *ngIf="isWidgetVisible('notifications')">
-        <app-dashboard-widget
-          title="Notifications"
-          subtitle="Important alerts surfaced alongside the rest of the operational view."
-          (removeWidget)="removeWidget('notifications')"
-        >
-          <ul class="notification-list" *ngIf="dashboard.notifications.length; else emptyNotifications">
-            <li class="notification-list__item" *ngFor="let notification of dashboard.notifications">
-              <span
-                class="notification-list__badge"
-                [class.notification-list__badge--warning]="notification.level === 'warning'"
-                [class.notification-list__badge--success]="notification.level === 'success'"
-              ></span>
-              <div class="notification-list__content">
-                <strong>{{ notification.title }}</strong>
-                <p>{{ notification.detail }}</p>
-              </div>
-            </li>
-          </ul>
+          <form
+            class="dashboard-insights"
+            (submit)="generateInsight(insightPrompt.value); insightPrompt.value = ''; $event.preventDefault()"
+          >
+            <label class="dashboard-insights__field">
+              <span>Ask about performance trends</span>
+              <input
+                #insightPrompt
+                type="text"
+                name="insightPrompt"
+                placeholder="Example: What should we watch in revenue this week?"
+              />
+            </label>
 
-          <ng-template #emptyNotifications>
-            <app-empty-state
-              title="No notifications"
-              description="Priority alerts will appear here when the workspace needs attention."
-            ></app-empty-state>
-          </ng-template>
-        </app-dashboard-widget>
-      </div>
-    </section>
+            <button type="submit" class="dashboard-button" [disabled]="isInsightLoading">
+              {{ isInsightLoading ? 'Generating...' : 'Generate insight' }}
+            </button>
+          </form>
+
+          <div class="dashboard-insights__response">
+            <p>{{ insightResponse }}</p>
+          </div>
+        </article>
+      </section>
+    </ng-container>
   </ng-container>
+
+  <ng-template #emptyDashboard>
+    <section class="dashboard-state app-card">
+      <app-empty-state
+        title="No dashboard data yet"
+        description="Dashboard metrics will appear here after the service returns data."
+      ></app-empty-state>
+    </section>
+  </ng-template>
+
+  <ng-template #emptyActivity>
+    <app-empty-state
+      title="No activity yet"
+      description="Recent workspace actions will appear here as new events are generated."
+    ></app-empty-state>
+  </ng-template>
 </app-page-shell>

@@ -21,6 +21,57 @@
     </button>
   </section>
 
+  <section class="users-filters app-card">
+    <label class="users-field users-field--search">
+      <span>Search users</span>
+      <input
+        type="search"
+        [formControl]="searchControl"
+        placeholder="Search by name, email, or plan"
+      />
+    </label>
+
+    <label class="users-field">
+      <span>Role</span>
+      <select [formControl]="roleFilterControl">
+        <option value="all">All roles</option>
+        <option *ngFor="let role of roles" [value]="role">
+          {{ role | titlecase }}
+        </option>
+      </select>
+    </label>
+
+    <label class="users-field">
+      <span>Status</span>
+      <select [formControl]="statusFilterControl">
+        <option value="all">All statuses</option>
+        <option *ngFor="let status of statuses" [value]="status">
+          {{ status }}
+        </option>
+      </select>
+    </label>
+
+    <label class="users-field">
+      <span>Sort by</span>
+      <select [formControl]="sortControl">
+        <option value="name-asc">Name (A-Z)</option>
+        <option value="name-desc">Name (Z-A)</option>
+        <option value="role-asc">Role</option>
+        <option value="status-asc">Status</option>
+      </select>
+    </label>
+
+    <div class="users-filters__actions">
+      <button
+        type="button"
+        class="users-button users-button--secondary"
+        (click)="clearFilters()"
+      >
+        Clear filters
+      </button>
+    </div>
+  </section>
+
   <section class="users-state app-card" *ngIf="errorMessage">
     <p>{{ errorMessage }}</p>
   </section>
@@ -91,42 +142,64 @@
   </section>
 
   <ng-container *ngIf="!isLoading">
-    <section class="table-card app-card" *ngIf="users$ | async as users">
-      <div class="table-card__row table-card__row--head">
-        <span>Name</span>
-        <span>Email</span>
-        <span>Plan</span>
-        <span>Role</span>
-        <span>Status</span>
-        <span>Last seen</span>
-        <span *appHasRole="['admin']">Actions</span>
-      </div>
+    <ng-container *ngIf="filteredUsers$ | async as users">
+      <section class="table-card app-card" *ngIf="users.length; else emptyUsers">
+        <div class="table-card__toolbar">
+          <div>
+            <p class="users-toolbar__eyebrow">Filtered results</p>
+            <h2>{{ users.length }} users</h2>
+          </div>
+        </div>
 
-      <div class="table-card__row" *ngFor="let user of users">
-        <span>{{ user.name }}</span>
-        <span>{{ user.email }}</span>
-        <span>{{ user.plan | fallback:'Trial pending' }}</span>
-        <span>{{ user.role | titlecase }}</span>
-        <span>{{ user.status }}</span>
-        <span>{{ user.lastSeen }}</span>
-        <span class="table-card__actions" *appHasRole="['admin']">
-          <button
-            type="button"
-            class="users-link"
-            (click)="startEdit(user)"
-          >
-            Edit
-          </button>
-          <button
-            type="button"
-            class="users-link users-link--danger"
-            (click)="deleteUser(user.id)"
-            [disabled]="isDeleting"
-          >
-            Delete
-          </button>
-        </span>
-      </div>
-    </section>
+        <div class="table-card__row table-card__row--head">
+          <span>Name</span>
+          <span>Email</span>
+          <span>Plan</span>
+          <span>Role</span>
+          <span>Status</span>
+          <span>Last seen</span>
+          <span *appHasRole="['admin']">Actions</span>
+        </div>
+
+        <div class="table-card__row" *ngFor="let user of users">
+          <span>{{ user.name }}</span>
+          <span>{{ user.email }}</span>
+          <span>{{ user.plan | fallback:'Trial pending' }}</span>
+          <span>
+            <span class="status-pill">{{ user.role | titlecase }}</span>
+          </span>
+          <span>
+            <span class="status-pill">{{ user.status }}</span>
+          </span>
+          <span>{{ user.lastSeen }}</span>
+          <span class="table-card__actions" *appHasRole="['admin']">
+            <button
+              type="button"
+              class="users-link"
+              (click)="startEdit(user)"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="users-link users-link--danger"
+              (click)="deleteUser(user.id)"
+              [disabled]="isDeleting"
+            >
+              Delete
+            </button>
+          </span>
+        </div>
+      </section>
+    </ng-container>
   </ng-container>
+
+  <ng-template #emptyUsers>
+    <section class="users-state app-card">
+      <app-empty-state
+        title="No users match these filters"
+        description="Try clearing one or more filters to widen the current result set."
+      ></app-empty-state>
+    </section>
+  </ng-template>
 </app-page-shell>
