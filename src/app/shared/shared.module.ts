@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { EmptyStateComponent } from './components/ui/empty-state/empty-state.component';
 import { SkeletonBlockComponent } from './components/loaders/skeleton-block/skeleton-block.component';
 import { PageShellComponent } from './components/ui/page-shell/page-shell.component';
 import { AutofocusDirective } from './directives/autofocus.directive';
@@ -8,7 +9,12 @@ import { HasRoleDirective } from './directives/has-role.directive';
 import { FallbackPipe } from './pipes/fallback.pipe';
 
 @NgModule({
-  declarations: [PageShellComponent, FallbackPipe, SkeletonBlockComponent],
+  declarations: [
+    PageShellComponent,
+    FallbackPipe,
+    SkeletonBlockComponent,
+    EmptyStateComponent,
+  ],
   imports: [CommonModule, AutofocusDirective, HasRoleDirective],
   exports: [
     CommonModule,
@@ -17,6 +23,7 @@ import { FallbackPipe } from './pipes/fallback.pipe';
     AutofocusDirective,
     HasRoleDirective,
     SkeletonBlockComponent,
+    EmptyStateComponent,
   ],
 })
 export class SharedModule {}

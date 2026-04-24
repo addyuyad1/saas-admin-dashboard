@@ -1,21 +1,28 @@
 .layout-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: 264px minmax(0, 1fr);
 }
 
 .layout-shell__main {
   display: grid;
   grid-template-rows: auto 1fr auto;
   min-width: 0;
+  background:
+    radial-gradient(circle at top right, rgba(31, 111, 235, 0.08), transparent 22%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.36) 0%, transparent 32%);
 }
 
 .layout-shell__content {
-  padding: 1.5rem;
+  padding: 1rem 1.25rem 1.25rem;
 }
 
 @media (max-width: 960px) {
   .layout-shell {
     grid-template-columns: 1fr;
+  }
+
+  .layout-shell__content {
+    padding: 0.85rem 1rem 1rem;
   }
 }

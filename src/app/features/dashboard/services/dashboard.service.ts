@@ -32,6 +32,13 @@ export class DashboardService {
             trend: '+3.1%',
             helperText: 'Net expansion across active accounts',
           },
+          {
+            id: 'retention',
+            label: 'Retention',
+            value: '92.6%',
+            trend: '+1.4%',
+            helperText: 'Gross retention across paid workspaces',
+          },
         ],
         revenueSeries: [
           { label: 'Jan', value: 82000 },
@@ -51,6 +58,23 @@ export class DashboardService {
           { label: 'Starter', value: 5400 },
           { label: 'Growth', value: 7340 },
           { label: 'Enterprise', value: 5680 },
+        ],
+        notifications: [
+          {
+            title: 'Billing review due',
+            detail: 'Two enterprise invoices need approval before the weekly close.',
+            level: 'warning',
+          },
+          {
+            title: 'Usage anomaly resolved',
+            detail: 'The spike in API traffic has stabilized after the latest deployment.',
+            level: 'success',
+          },
+          {
+            title: 'Team digest ready',
+            detail: 'Your workspace summary has been prepared for the next leadership sync.',
+            level: 'info',
+          },
         ],
         lastUpdated: new Date().toLocaleString(),
       } satisfies DashboardData).pipe(delay(this.latencyMs)),

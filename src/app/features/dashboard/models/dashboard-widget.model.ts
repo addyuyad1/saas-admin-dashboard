@@ -1,9 +1,9 @@
 export type DashboardWidgetId =
-  | 'kpis'
   | 'revenue-trend'
   | 'signup-sources'
   | 'user-distribution'
-  | 'live-activity';
+  | 'recent-activity'
+  | 'notifications';
 
 export interface DashboardWidget {
   id: DashboardWidgetId;
@@ -12,11 +12,6 @@ export interface DashboardWidget {
 }
 
 export const DASHBOARD_WIDGETS: DashboardWidget[] = [
-  {
-    id: 'kpis',
-    title: 'Key performance indicators',
-    subtitle: 'Top-level usage, revenue, and growth signals for the current period.',
-  },
   {
     id: 'revenue-trend',
     title: 'Revenue trend',
@@ -33,8 +28,13 @@ export const DASHBOARD_WIDGETS: DashboardWidget[] = [
     subtitle: 'A quick view of how active users are distributed by plan tier.',
   },
   {
-    id: 'live-activity',
-    title: 'Live activity',
+    id: 'recent-activity',
+    title: 'Recent activity',
     subtitle: 'Simulated real-time operational updates coming from the workspace.',
+  },
+  {
+    id: 'notifications',
+    title: 'Notifications',
+    subtitle: 'Priority alerts and operational follow-ups for the current workspace.',
   },
 ];

@@ -1,6 +1,6 @@
 .page-shell {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.15rem;
 }
 
 .page-shell__header {
@@ -14,7 +14,7 @@
 .page-shell__eyebrow {
   margin: 0 0 0.35rem;
   color: var(--primary-dark);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -22,17 +22,19 @@
 
 .page-shell h1 {
   margin: 0;
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-size: clamp(1.9rem, 3vw, 2.55rem);
+  line-height: 1.02;
 }
 
 .page-shell__subtitle {
   margin: 0;
-  max-width: 34rem;
+  max-width: 36rem;
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.55;
+  font-size: 0.96rem;
 }
 
 .page-shell__content {
   display: grid;
-  gap: 1rem;
+  gap: 1.15rem;
 }

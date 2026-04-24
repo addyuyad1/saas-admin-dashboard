@@ -23,7 +23,7 @@ import { DashboardWidgetService } from '../../services/dashboard-widget.service'
 })
 export class DashboardPageComponent implements OnInit {
   readonly availableWidgets = DASHBOARD_WIDGETS;
-  readonly skeletonCards = [1, 2, 3];
+  readonly skeletonCards = [1, 2, 3, 4];
   readonly activityFeed$: Observable<LiveActivityItem[]>;
 
   data: DashboardData | null = null;

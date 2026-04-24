@@ -1,17 +1,18 @@
 .header {
-  margin: 1.5rem 1.5rem 0;
-  padding: 1.25rem 1.5rem;
+  margin: 1rem 1.25rem 0;
+  padding: 0.9rem 1.1rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
+  backdrop-filter: blur(14px);
 }
 
 .header__eyebrow {
   margin: 0 0 0.3rem;
   color: var(--primary-dark);
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -19,13 +20,14 @@
 
 .header h1 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.15rem;
 }
 
 .header__actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.65rem;
+  flex-wrap: wrap;
 }
 
 .header__profile {
@@ -43,8 +45,14 @@
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface-muted);
-  padding: 0.65rem 1rem;
+  padding: 0.58rem 0.9rem;
   font-weight: 600;
+  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+.header__button:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--surface-muted) 78%, var(--primary) 22%);
 }
 
 .status-pill--neutral {
@@ -59,12 +67,12 @@
 
 @media (max-width: 720px) {
   .header {
-    margin: 1rem 1rem 0;
-    padding: 1rem;
+    margin: 0.85rem 1rem 0;
+    padding: 0.85rem 0.95rem;
   }
 
   .header__actions {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 }

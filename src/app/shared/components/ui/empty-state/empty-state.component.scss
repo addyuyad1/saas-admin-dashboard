@@ -1,0 +1,27 @@
+.empty-state {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+  padding: 1.25rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--surface-muted) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.empty-state__mark {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, rgba(31, 111, 235, 0.16), rgba(125, 194, 255, 0.3));
+}
+
+.empty-state h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.empty-state p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
