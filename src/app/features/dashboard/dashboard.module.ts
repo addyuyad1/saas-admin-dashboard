@@ -8,7 +8,6 @@ import { DashboardWidgetComponent } from './components/dashboard-widget/dashboar
 import { KpiCardComponent } from './components/kpi-card/kpi-card.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
-import { DashboardService } from './services/dashboard.service';
 import { DashboardWidgetService } from './services/dashboard-widget.service';
 
 @NgModule({
@@ -21,6 +20,6 @@ import { DashboardWidgetService } from './services/dashboard-widget.service';
     PieChartComponent,
   ],
   imports: [SharedModule, DashboardRoutingModule],
-  providers: [DashboardService, DashboardWidgetService],
+  providers: [DashboardWidgetService],
 })
 export class DashboardModule {}

@@ -1,4 +1,1 @@
-export interface ChartDatum {
-  name: string;
-  value: number;
-}
+export type { ChartDatum } from '../../../core/models/chart.model';

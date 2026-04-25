@@ -1,6 +1,3 @@
-export interface DashboardData {
-  users: number;
-  revenue: number;
-  growth: number;
-  sessions: number;
-}
+import { DashboardModel } from '../../../core/models/dashboard.model';
+
+export type DashboardData = DashboardModel;

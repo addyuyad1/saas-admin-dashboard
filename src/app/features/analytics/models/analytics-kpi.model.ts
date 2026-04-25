@@ -1,5 +1,1 @@
-export interface AnalyticsKpi {
-  label: string;
-  value: string;
-  insight: string;
-}
+export type { AnalyticsKpi } from '../../../core/models/analytics-kpi.model';

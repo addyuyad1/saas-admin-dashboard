@@ -1,78 +1,183 @@
 <app-page-shell
   title="Analytics"
-  subtitle="Analytics stays lazy loaded and self-contained so charts, insights, and future AI workflows can evolve without leaking into other domains."
+  subtitle="A richer reporting workspace for revenue, growth, sessions, and plan mix trends."
 >
-  <section class="analytics-grid">
-    <article class="analytics-card app-card" *ngFor="let kpi of kpis">
-      <span class="status-pill">{{ kpi.label }}</span>
-      <strong>{{ kpi.value }}</strong>
-      <p>{{ kpi.insight }}</p>
-    </article>
-  </section>
-
-  <section class="analytics-charts">
-    <app-chart-card
-      title="Weekly sessions"
-      subtitle="Session volume by day to highlight weekly engagement patterns."
-    >
-      <app-chart-bar
-        [data]="weeklySessionsData"
-        [height]="320"
-        ariaLabel="Weekly sessions bar chart"
-      ></app-chart-bar>
-    </app-chart-card>
-
-    <app-chart-card
-      title="Growth trend"
-      subtitle="Monthly growth progression shown as a line chart."
-    >
-      <app-chart-line
-        [data]="growthTrendData"
-        [height]="320"
-        ariaLabel="Growth trend line chart"
-      ></app-chart-line>
-    </app-chart-card>
-
-    <app-chart-card
-      class="analytics-charts__wide"
-      title="User plan distribution"
-      subtitle="Plan mix across active accounts."
-    >
-      <app-chart-pie
-        [data]="planDistributionData"
-        [height]="320"
-        centerLabel="Plans"
-        ariaLabel="User plan distribution pie chart"
-      ></app-chart-pie>
-    </app-chart-card>
-  </section>
-
-  <section class="analytics-ai app-card">
-    <div class="analytics-ai__header">
-      <div>
-        <p class="analytics-ai__eyebrow">AI insights</p>
-        <h2>Ask for a quick summary</h2>
-      </div>
+  <section class="analytics-hero app-card">
+    <div>
+      <p class="analytics-hero__eyebrow">Performance intelligence</p>
+      <h2>Data-rich operating view</h2>
+      <p class="analytics-hero__copy">
+        Track business movement with deeper comparisons, denser chart coverage,
+        and executive-ready takeaways in one analytics workspace.
+      </p>
     </div>
 
-    <form class="analytics-ai__form" [formGroup]="insightForm" (ngSubmit)="generateInsight()">
-      <label>
-        <span>Question</span>
-        <textarea
-          rows="4"
-          formControlName="query"
-          placeholder="Ask a mock analytics question..."
-        ></textarea>
-      </label>
-
-      <button type="submit" class="analytics-ai__button" [disabled]="isGenerating">
-        {{ isGenerating ? 'Generating...' : 'Generate insight' }}
-      </button>
-    </form>
-
-    <article class="analytics-ai__response" *ngIf="insightResponse">
-      <h3>Generated insight</h3>
-      <p>{{ insightResponse }}</p>
-    </article>
+    <div class="analytics-hero__meta">
+      <span class="status-pill">Compared to last week and month</span>
+      <span class="status-pill">Mock AI insights enabled</span>
+    </div>
   </section>
+
+  <ng-container *ngIf="!isLoading; else analyticsLoading">
+    <section class="analytics-section">
+      <header class="analytics-section__header">
+        <div>
+          <p class="analytics-section__eyebrow">Summary</p>
+          <h2>KPI overview</h2>
+        </div>
+      </header>
+
+      <div class="analytics-kpis">
+        <article class="analytics-kpi app-card" *ngFor="let kpi of kpis">
+          <div class="analytics-kpi__top">
+            <span class="analytics-kpi__label">{{ kpi.label }}</span>
+            <span
+              class="analytics-kpi__trend"
+              [ngClass]="{
+                'analytics-kpi__trend--up': kpi.trend === 'up',
+                'analytics-kpi__trend--down': kpi.trend === 'down',
+                'analytics-kpi__trend--neutral': kpi.trend === 'neutral'
+              }"
+            >
+              {{ kpi.comparison }}
+            </span>
+          </div>
+
+          <strong>{{ kpi.value }}</strong>
+          <p class="analytics-kpi__timeframe">{{ kpi.timeframe }}</p>
+          <p class="analytics-kpi__insight">{{ kpi.insight }}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="analytics-section">
+      <header class="analytics-section__header">
+        <div>
+          <p class="analytics-section__eyebrow">Reporting board</p>
+          <h2>Trend and distribution charts</h2>
+        </div>
+      </header>
+
+      <section class="analytics-charts">
+        <app-chart-card
+          title="Revenue trend"
+          subtitle="Monthly revenue progression compared to the prior month baseline."
+        >
+          <div class="analytics-chart__meta">Compared to last month: +8.4%</div>
+          <app-chart-line
+            [data]="revenueTrendData"
+            [height]="320"
+            prefix="$"
+            ariaLabel="Revenue trend line chart"
+          ></app-chart-line>
+        </app-chart-card>
+
+        <app-chart-card
+          title="User growth"
+          subtitle="Account growth shown as an area chart to highlight momentum."
+        >
+          <div class="analytics-chart__meta">Compared to last month: +12%</div>
+          <app-chart-line
+            [data]="userGrowthData"
+            [height]="320"
+            variant="area"
+            ariaLabel="User growth area chart"
+          ></app-chart-line>
+        </app-chart-card>
+
+        <app-chart-card
+          title="Weekly sessions"
+          subtitle="Session volume by day to highlight weekly engagement patterns."
+        >
+          <div class="analytics-chart__meta">Compared to last week: +5.6%</div>
+          <app-chart-bar
+            [data]="weeklySessionsData"
+            [height]="320"
+            ariaLabel="Weekly sessions bar chart"
+          ></app-chart-bar>
+        </app-chart-card>
+
+        <app-chart-card
+          title="Plan distribution"
+          subtitle="Plan mix across active accounts and higher-value cohorts."
+        >
+          <div class="analytics-chart__meta">
+            Compared to last month: Enterprise share up 1.8%
+          </div>
+          <app-chart-pie
+            [data]="planDistributionData"
+            [height]="320"
+            centerLabel="Plans"
+            ariaLabel="User plan distribution pie chart"
+          ></app-chart-pie>
+        </app-chart-card>
+      </section>
+    </section>
+
+    <section class="analytics-section analytics-section--insights">
+      <header class="analytics-section__header">
+        <div>
+          <p class="analytics-section__eyebrow">Interpretation</p>
+          <h2>AI insights and analyst notes</h2>
+        </div>
+      </header>
+
+      <div class="analytics-insights">
+        <article class="analytics-insight-card app-card" *ngFor="let insight of insightHighlights">
+          <p class="analytics-insight-card__eyebrow">Static AI insight</p>
+          <h3>{{ insight.title }}</h3>
+          <p>{{ insight.summary }}</p>
+          <span class="analytics-insight-card__comparison">{{ insight.comparison }}</span>
+        </article>
+
+        <section class="analytics-ai app-card">
+          <div class="analytics-ai__header">
+            <div>
+              <p class="analytics-ai__eyebrow">Ask analytics AI</p>
+              <h2>Generate a quick narrative</h2>
+            </div>
+          </div>
+
+          <form
+            class="analytics-ai__form"
+            [formGroup]="insightForm"
+            (ngSubmit)="generateInsight()"
+          >
+            <label>
+              <span>Question</span>
+              <textarea
+                rows="4"
+                formControlName="query"
+                placeholder="Ask a mock analytics question..."
+              ></textarea>
+            </label>
+
+            <button type="submit" class="analytics-ai__button" [disabled]="isGenerating">
+              <span class="button-content">
+                <span
+                  class="button-spinner"
+                  *ngIf="isGenerating"
+                  aria-hidden="true"
+                ></span>
+                <span>{{ isGenerating ? 'Generating...' : 'Generate insight' }}</span>
+              </span>
+            </button>
+          </form>
+
+          <article class="analytics-ai__response" *ngIf="insightResponse">
+            <h3>Generated insight</h3>
+            <p>{{ insightResponse }}</p>
+          </article>
+        </section>
+      </div>
+    </section>
+  </ng-container>
+
+  <ng-template #analyticsLoading>
+    <section class="analytics-loading">
+      <app-skeleton-block [height]="160"></app-skeleton-block>
+      <app-skeleton-block [height]="320"></app-skeleton-block>
+      <app-skeleton-block [height]="260"></app-skeleton-block>
+    </section>
+  </ng-template>
 </app-page-shell>

@@ -4,7 +4,14 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, delay, of, take } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  delay,
+  forkJoin,
+  of,
+  take,
+} from 'rxjs';
 
 import {
   LiveActivityItem,
@@ -26,14 +33,8 @@ export class DashboardPageComponent implements OnInit {
   readonly skeletonPanels = [1, 2];
   readonly skeletonRows = [1, 2, 3, 4];
   readonly activityFeed$: Observable<LiveActivityItem[]>;
-  readonly revenueTrendData: ChartDatum[];
-  readonly userGrowthData: ChartDatum[];
-  private readonly fallbackDashboardData: DashboardData = {
-    users: 1240,
-    revenue: 54000,
-    growth: 12,
-    sessions: 18400,
-  };
+  revenueTrendData: ChartDatum[] = [];
+  userGrowthData: ChartDatum[] = [];
   private readonly dashboardDataSubject = new BehaviorSubject<DashboardData | null>(
     null,
   );
@@ -53,8 +54,6 @@ export class DashboardPageComponent implements OnInit {
     realtimeUpdatesService: RealtimeUpdatesService,
   ) {
     this.activityFeed$ = realtimeUpdatesService.activityFeed$;
-    this.revenueTrendData = dashboardService.getRevenueTrendData();
-    this.userGrowthData = dashboardService.getUserGrowthData();
   }
 
   ngOnInit(): void {
@@ -69,18 +68,16 @@ export class DashboardPageComponent implements OnInit {
     this.errorMessage = '';
     this.changeDetectorRef.markForCheck();
 
-    this.dashboardService
-      .getDashboardData()
-      .pipe(
-      catchError((error: Error) => {
-        this.errorMessage =
-          error.message || 'Dashboard data could not be loaded.';
-        return of(this.fallbackDashboardData);
-      }),
-      take(1),
-    )
-      .subscribe((data) => {
-        this.dashboardDataSubject.next(data);
+    forkJoin({
+      dashboardData: this.dashboardService.getDashboardData(),
+      revenueTrendData: this.dashboardService.getRevenueTrendData(),
+      userGrowthData: this.dashboardService.getUserGrowthData(),
+    })
+      .pipe(take(1))
+      .subscribe(({ dashboardData, revenueTrendData, userGrowthData }) => {
+        this.dashboardDataSubject.next(dashboardData);
+        this.revenueTrendData = revenueTrendData;
+        this.userGrowthData = userGrowthData;
         this.hasLoadedData = true;
         this.isLoading = false;
         this.isRefreshing = false;
