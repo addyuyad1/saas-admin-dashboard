@@ -114,18 +114,18 @@ export class HeaderComponent {
   }
 
   openProfile(): void {
+    console.debug('[Header] Profile navigation clicked.');
     this.closeOverlays();
-    void this.router.navigate(['/settings'], { fragment: 'profile' });
   }
 
   openSettings(): void {
+    console.debug('[Header] Settings navigation clicked.');
     this.closeOverlays();
-    void this.router.navigate(['/settings']);
   }
 
   toggleTheme(): void {
+    this.closeOverlays();
     this.themeService.toggleTheme();
-    this.isMenuOpen = false;
   }
 
   submitGlobalSearch(): void {

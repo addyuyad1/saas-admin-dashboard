@@ -1,0 +1,12 @@
+<article class="chart-card app-card">
+  <header class="chart-card__header">
+    <div>
+      <h3>{{ title }}</h3>
+      <p *ngIf="subtitle">{{ subtitle }}</p>
+    </div>
+  </header>
+
+  <div class="chart-card__body">
+    <ng-content></ng-content>
+  </div>
+</article>

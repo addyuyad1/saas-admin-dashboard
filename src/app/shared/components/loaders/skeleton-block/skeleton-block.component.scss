@@ -1,4 +1,5 @@
 .skeleton-block {
+  display: block;
   width: 100%;
   border-radius: var(--radius-md);
   background: linear-gradient(
@@ -18,5 +19,11 @@
 
   100% {
     background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-block {
+    animation: none;
   }
 }

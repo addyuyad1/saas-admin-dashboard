@@ -4,12 +4,13 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
-import { Observable, catchError, delay, of, shareReplay, take } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, delay, of, take } from 'rxjs';
 
 import {
   LiveActivityItem,
   RealtimeUpdatesService,
 } from '../../../../core/services/realtime-updates.service';
+import { ChartDatum } from '../../../../shared/components/charts/chart.models';
 import { DashboardData } from '../../models/dashboard-data.model';
 import { DashboardService } from '../../services/dashboard.service';
 
@@ -22,19 +23,28 @@ import { DashboardService } from '../../services/dashboard.service';
 })
 export class DashboardPageComponent implements OnInit {
   readonly skeletonCards = [1, 2, 3, 4];
+  readonly skeletonPanels = [1, 2];
+  readonly skeletonRows = [1, 2, 3, 4];
   readonly activityFeed$: Observable<LiveActivityItem[]>;
+  readonly revenueTrendData: ChartDatum[];
+  readonly userGrowthData: ChartDatum[];
   private readonly fallbackDashboardData: DashboardData = {
     users: 1240,
     revenue: 54000,
     growth: 12,
     sessions: 18400,
   };
+  private readonly dashboardDataSubject = new BehaviorSubject<DashboardData | null>(
+    null,
+  );
+  readonly dashboardData$ = this.dashboardDataSubject.asObservable();
 
-  dashboardData$!: Observable<DashboardData>;
   errorMessage = '';
   insightResponse =
     'Ask for a revenue, growth, or user trend summary to surface a quick executive-style insight.';
+  hasLoadedData = false;
   isLoading = true;
+  isRefreshing = false;
   isInsightLoading = false;
 
   constructor(
@@ -43,6 +53,8 @@ export class DashboardPageComponent implements OnInit {
     realtimeUpdatesService: RealtimeUpdatesService,
   ) {
     this.activityFeed$ = realtimeUpdatesService.activityFeed$;
+    this.revenueTrendData = dashboardService.getRevenueTrendData();
+    this.userGrowthData = dashboardService.getUserGrowthData();
   }
 
   ngOnInit(): void {
@@ -50,23 +62,30 @@ export class DashboardPageComponent implements OnInit {
   }
 
   loadDashboard(): void {
-    this.isLoading = true;
+    const isInitialLoad = !this.hasLoadedData;
+
+    this.isLoading = isInitialLoad;
+    this.isRefreshing = !isInitialLoad;
     this.errorMessage = '';
     this.changeDetectorRef.markForCheck();
 
-    this.dashboardData$ = this.dashboardService.getDashboardData().pipe(
+    this.dashboardService
+      .getDashboardData()
+      .pipe(
       catchError((error: Error) => {
         this.errorMessage =
           error.message || 'Dashboard data could not be loaded.';
         return of(this.fallbackDashboardData);
       }),
-      shareReplay({ bufferSize: 1, refCount: true }),
-    );
-
-    this.dashboardData$.pipe(take(1)).subscribe(() => {
-      this.isLoading = false;
-      this.changeDetectorRef.markForCheck();
-    });
+      take(1),
+    )
+      .subscribe((data) => {
+        this.dashboardDataSubject.next(data);
+        this.hasLoadedData = true;
+        this.isLoading = false;
+        this.isRefreshing = false;
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   generateInsight(prompt: string): void {
@@ -83,6 +102,7 @@ export class DashboardPageComponent implements OnInit {
       .subscribe((response) => {
         this.insightResponse = response;
         this.isInsightLoading = false;
+        this.changeDetectorRef.markForCheck();
       });
   }
 

@@ -27,4 +27,8 @@ export class SidebarComponent {
       map((role: AuthRole | null) => navigationService.getVisibleItems(role)),
     );
   }
+
+  onNavigationClick(path: string): void {
+    console.debug(`[Sidebar] Navigation clicked: ${path}`);
+  }
 }

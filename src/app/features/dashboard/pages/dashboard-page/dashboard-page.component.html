@@ -13,16 +13,82 @@
     </div>
 
     <div class="dashboard-hero__actions">
-      <button type="button" class="dashboard-button" (click)="loadDashboard()">
-        Refresh data
+      <button
+        type="button"
+        class="dashboard-button"
+        (click)="loadDashboard()"
+        [disabled]="isRefreshing"
+      >
+        <span class="button-content">
+          <span
+            class="button-spinner"
+            *ngIf="isRefreshing"
+            aria-hidden="true"
+          ></span>
+          <span>{{ isRefreshing ? 'Refreshing...' : 'Refresh data' }}</span>
+        </span>
       </button>
     </div>
   </section>
 
-  <div *ngIf="isLoading" class="dashboard-state app-card">Loading...</div>
+  <section *ngIf="isLoading && !hasLoadedData" class="dashboard-loading">
+    <section class="dashboard-summary">
+      <header class="dashboard-summary__header">
+        <div>
+          <p class="dashboard-summary__eyebrow">Performance</p>
+          <h2>Key metrics</h2>
+        </div>
+      </header>
 
-  <ng-container *ngIf="dashboardData$ | async as data; else emptyDashboard">
-      <section class="dashboard-summary">
+      <div class="dashboard-summary-grid">
+        <article
+          class="dashboard-skeleton-card app-card"
+          *ngFor="let card of skeletonCards"
+        >
+          <app-skeleton-block [height]="18" width="7rem"></app-skeleton-block>
+          <app-skeleton-block [height]="38" width="9rem"></app-skeleton-block>
+          <app-skeleton-block [height]="14" width="5rem"></app-skeleton-block>
+        </article>
+      </div>
+    </section>
+
+    <section class="dashboard-grid">
+      <article class="dashboard-panel app-card" *ngFor="let panel of skeletonPanels">
+        <app-skeleton-block [height]="16" width="7rem"></app-skeleton-block>
+        <app-skeleton-block [height]="28" width="11rem"></app-skeleton-block>
+        <app-skeleton-block [height]="14" width="16rem"></app-skeleton-block>
+        <app-skeleton-block [height]="280"></app-skeleton-block>
+      </article>
+
+      <article class="dashboard-panel app-card dashboard-panel--wide">
+        <app-skeleton-block [height]="16" width="6rem"></app-skeleton-block>
+        <app-skeleton-block [height]="28" width="10rem"></app-skeleton-block>
+
+        <div class="dashboard-skeleton-list">
+          <div class="dashboard-skeleton-list__item" *ngFor="let row of skeletonRows">
+            <app-skeleton-block [height]="14" width="1rem"></app-skeleton-block>
+            <div class="dashboard-skeleton-list__content">
+              <app-skeleton-block [height]="16" width="10rem"></app-skeleton-block>
+              <app-skeleton-block [height]="14" width="16rem"></app-skeleton-block>
+            </div>
+            <app-skeleton-block [height]="14" width="4rem"></app-skeleton-block>
+          </div>
+        </div>
+      </article>
+
+      <article class="dashboard-panel app-card dashboard-panel--wide">
+        <app-skeleton-block [height]="16" width="7rem"></app-skeleton-block>
+        <app-skeleton-block [height]="28" width="11rem"></app-skeleton-block>
+        <app-skeleton-block [height]="52"></app-skeleton-block>
+        <app-skeleton-block [height]="96"></app-skeleton-block>
+      </article>
+    </section>
+  </section>
+
+  <ng-container *ngIf="hasLoadedData">
+    <ng-container *ngIf="dashboardData$ | async as data; else emptyDashboard">
+      <div class="dashboard-content">
+        <section class="dashboard-summary">
         <header class="dashboard-summary__header">
           <div>
             <p class="dashboard-summary__eyebrow">Performance</p>
@@ -60,7 +126,33 @@
       </section>
 
       <section class="dashboard-grid">
-        <article class="dashboard-panel app-card">
+        <app-chart-card
+          title="Revenue trend"
+          subtitle="Monthly recurring revenue progression across the last six reporting periods."
+        >
+          <app-chart-line
+            class="dashboard-chart"
+            [data]="revenueTrendData"
+            [height]="320"
+            prefix="$"
+            ariaLabel="Revenue trend chart"
+          ></app-chart-line>
+        </app-chart-card>
+
+        <app-chart-card
+          title="User growth"
+          subtitle="Account growth shown as a responsive area chart to highlight momentum."
+        >
+          <app-chart-line
+            class="dashboard-chart"
+            [data]="userGrowthData"
+            [height]="320"
+            variant="area"
+            ariaLabel="User growth area chart"
+          ></app-chart-line>
+        </app-chart-card>
+
+        <article class="dashboard-panel app-card dashboard-panel--wide">
           <header class="dashboard-panel__header">
             <div>
               <p class="dashboard-summary__eyebrow">Activity</p>
@@ -86,7 +178,7 @@
           </ng-container>
         </article>
 
-        <article class="dashboard-panel app-card">
+        <article class="dashboard-panel app-card dashboard-panel--wide">
           <header class="dashboard-panel__header">
             <div>
               <p class="dashboard-summary__eyebrow">AI assistant</p>
@@ -117,7 +209,9 @@
             <p>{{ insightResponse }}</p>
           </div>
         </article>
-      </section>
+        </section>
+      </div>
+    </ng-container>
   </ng-container>
 
   <ng-template #emptyDashboard>

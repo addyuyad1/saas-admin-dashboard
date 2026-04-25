@@ -2,7 +2,7 @@
   title="Settings"
   subtitle="User preferences stay accessible to every role, while admin-only governance controls remain clearly separated."
 >
-  <section class="settings-preferences app-card">
+  <section id="profile" class="settings-preferences app-card">
     <div class="settings-preferences__header">
       <div>
         <p class="settings-preferences__eyebrow">Preferences</p>
@@ -51,12 +51,31 @@
     </form>
   </section>
 
-  <section class="settings-list">
-    <ng-container *appHasRole="['admin']">
-      <article class="settings-card app-card" *ngFor="let section of sections">
+  <section class="settings-overview app-card">
+    <div>
+      <p class="settings-preferences__eyebrow">Overview</p>
+      <h2>Account and workspace settings</h2>
+      <p>
+        Manage personal preferences here, and review operational controls below
+        when your role includes admin access.
+      </p>
+    </div>
+  </section>
+
+  <section id="workspace" class="settings-list" *ngIf="isAdmin; else userSettingsNotice">
+    <article class="settings-card app-card" *ngFor="let section of sections">
         <h2>{{ section.title }}</h2>
         <p>{{ section.description }}</p>
-      </article>
-    </ng-container>
+    </article>
   </section>
+
+  <ng-template #userSettingsNotice>
+    <section class="settings-card app-card">
+      <h2>Workspace controls are managed by admins</h2>
+      <p>
+        Your profile, theme, timezone, and personal preferences are available
+        above. Governance and billing settings appear here for admin users.
+      </p>
+    </section>
+  </ng-template>
 </app-page-shell>

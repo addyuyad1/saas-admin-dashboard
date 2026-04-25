@@ -10,6 +10,43 @@
     </article>
   </section>
 
+  <section class="analytics-charts">
+    <app-chart-card
+      title="Weekly sessions"
+      subtitle="Session volume by day to highlight weekly engagement patterns."
+    >
+      <app-chart-bar
+        [data]="weeklySessionsData"
+        [height]="320"
+        ariaLabel="Weekly sessions bar chart"
+      ></app-chart-bar>
+    </app-chart-card>
+
+    <app-chart-card
+      title="Growth trend"
+      subtitle="Monthly growth progression shown as a line chart."
+    >
+      <app-chart-line
+        [data]="growthTrendData"
+        [height]="320"
+        ariaLabel="Growth trend line chart"
+      ></app-chart-line>
+    </app-chart-card>
+
+    <app-chart-card
+      class="analytics-charts__wide"
+      title="User plan distribution"
+      subtitle="Plan mix across active accounts."
+    >
+      <app-chart-pie
+        [data]="planDistributionData"
+        [height]="320"
+        centerLabel="Plans"
+        ariaLabel="User plan distribution pie chart"
+      ></app-chart-pie>
+    </app-chart-card>
+  </section>
+
   <section class="analytics-ai app-card">
     <div class="analytics-ai__header">
       <div>

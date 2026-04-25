@@ -1,8 +1,16 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
 import { finalize, Observable } from 'rxjs';
 
+import { AuthService } from '../../../../core/auth/services/auth.service';
 import { ThemeMode } from '../../../../core/services/theme.service';
 import {
   SettingsSection,
@@ -20,10 +28,12 @@ import { SettingsService } from '../../services/settings.service';
 export class SettingsPageComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   readonly sections: SettingsSection[];
   readonly preferences$: Observable<UserPreferences>;
   readonly themes: ThemeMode[] = ['light', 'dark'];
+  readonly isAdmin: boolean;
 
   isSaving = false;
   savedMessage = '';
@@ -37,10 +47,16 @@ export class SettingsPageComponent implements OnInit {
   });
 
   constructor(
+    private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
   ) {
     this.sections = settingsService.getSections();
     this.preferences$ = settingsService.preferences$;
+    this.isAdmin = authService.getCurrentRole() === 'admin';
+
+    this.preferencesForm.patchValue(this.settingsService.getPreferences(), {
+      emitEvent: false,
+    });
   }
 
   ngOnInit(): void {
@@ -48,6 +64,7 @@ export class SettingsPageComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((preferences) => {
         this.preferencesForm.patchValue(preferences, { emitEvent: false });
+        this.changeDetectorRef.markForCheck();
       });
   }
 
@@ -61,6 +78,7 @@ export class SettingsPageComponent implements OnInit {
       .pipe(finalize(() => (this.isSaving = false)))
       .subscribe(() => {
         this.savedMessage = 'Preferences saved successfully.';
+        this.changeDetectorRef.markForCheck();
       });
   }
 }

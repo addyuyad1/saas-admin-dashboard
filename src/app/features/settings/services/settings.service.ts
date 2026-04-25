@@ -7,7 +7,9 @@ import {
   UserPreferences,
 } from '../models/settings-section.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SettingsService {
   private readonly storageKey = 'saas-admin-dashboard.preferences';
   private readonly preferencesSubject = new BehaviorSubject<UserPreferences>(
@@ -17,6 +19,10 @@ export class SettingsService {
   readonly preferences$ = this.preferencesSubject.asObservable();
 
   constructor(private readonly themeService: ThemeService) {}
+
+  getPreferences(): UserPreferences {
+    return this.preferencesSubject.value;
+  }
 
   getSections(): SettingsSection[] {
     return [

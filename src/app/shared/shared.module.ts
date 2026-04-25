@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { SharedBarChartComponent } from './components/charts/bar-chart/bar-chart.component';
+import { ChartCardComponent } from './components/charts/chart-card/chart-card.component';
+import { SharedLineChartComponent } from './components/charts/line-chart/line-chart.component';
+import { SharedPieChartComponent } from './components/charts/pie-chart/pie-chart.component';
 import { EmptyStateComponent } from './components/ui/empty-state/empty-state.component';
 import { SkeletonBlockComponent } from './components/loaders/skeleton-block/skeleton-block.component';
 import { PageShellComponent } from './components/ui/page-shell/page-shell.component';
@@ -14,6 +18,10 @@ import { FallbackPipe } from './pipes/fallback.pipe';
     FallbackPipe,
     SkeletonBlockComponent,
     EmptyStateComponent,
+    ChartCardComponent,
+    SharedLineChartComponent,
+    SharedBarChartComponent,
+    SharedPieChartComponent,
   ],
   imports: [CommonModule, AutofocusDirective, HasRoleDirective],
   exports: [
@@ -24,6 +32,10 @@ import { FallbackPipe } from './pipes/fallback.pipe';
     HasRoleDirective,
     SkeletonBlockComponent,
     EmptyStateComponent,
+    ChartCardComponent,
+    SharedLineChartComponent,
+    SharedBarChartComponent,
+    SharedPieChartComponent,
   ],
 })
 export class SharedModule {}

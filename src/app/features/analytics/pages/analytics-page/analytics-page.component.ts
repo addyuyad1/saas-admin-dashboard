@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 
+import { ChartDatum } from '../../../../shared/components/charts/chart.models';
 import { AnalyticsKpi } from '../../models/analytics-kpi.model';
 import { AnalyticsService } from '../../services/analytics.service';
 
@@ -16,6 +17,9 @@ export class AnalyticsPageComponent {
   private readonly formBuilder = inject(FormBuilder);
 
   readonly kpis: AnalyticsKpi[];
+  readonly weeklySessionsData: ChartDatum[];
+  readonly growthTrendData: ChartDatum[];
+  readonly planDistributionData: ChartDatum[];
   insightResponse = '';
   isGenerating = false;
 
@@ -27,6 +31,9 @@ export class AnalyticsPageComponent {
     private readonly analyticsService: AnalyticsService,
   ) {
     this.kpis = analyticsService.getKpis();
+    this.weeklySessionsData = analyticsService.getWeeklySessionsData();
+    this.growthTrendData = analyticsService.getGrowthTrendData();
+    this.planDistributionData = analyticsService.getPlanDistributionData();
   }
 
   generateInsight(): void {

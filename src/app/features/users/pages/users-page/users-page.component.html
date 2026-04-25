@@ -46,7 +46,7 @@
       <select [formControl]="statusFilterControl">
         <option value="all">All statuses</option>
         <option *ngFor="let status of statuses" [value]="status">
-          {{ status }}
+          {{ getStatusLabel(status) }}
         </option>
       </select>
     </label>
@@ -62,6 +62,14 @@
     </label>
 
     <div class="users-filters__actions">
+      <label class="users-field users-field--page-size">
+        <span>Rows</span>
+        <select [formControl]="pageSizeControl">
+          <option [ngValue]="5">5 per page</option>
+          <option [ngValue]="10">10 per page</option>
+        </select>
+      </label>
+
       <button
         type="button"
         class="users-button users-button--secondary"
@@ -79,24 +87,45 @@
   <section class="users-form app-card" *ngIf="showForm">
     <header class="users-form__header">
       <div>
-        <h2>{{ editingUserId ? 'Edit user' : 'Create user' }}</h2>
-        <p>Use the mock form below to manage enterprise user records.</p>
+        <h2>{{ editingUserId ? 'Edit workspace user' : 'Add workspace user' }}</h2>
+        <p>
+          Capture the role, team, and access details you would usually collect
+          during onboarding.
+        </p>
       </div>
     </header>
 
     <form class="users-form__grid" [formGroup]="userForm" (ngSubmit)="saveUser()">
       <label>
-        <span>Name</span>
-        <input type="text" formControlName="name" />
+        <span>Full name</span>
+        <input type="text" formControlName="name" placeholder="Alicia Gomez" />
       </label>
 
       <label>
-        <span>Email</span>
-        <input type="email" formControlName="email" />
+        <span>Work email</span>
+        <input type="email" formControlName="email" placeholder="alicia@saas.com" />
       </label>
 
       <label>
-        <span>Plan</span>
+        <span>Job title</span>
+        <input
+          type="text"
+          formControlName="title"
+          placeholder="Customer Success Manager"
+        />
+      </label>
+
+      <label>
+        <span>Team</span>
+        <select formControlName="team">
+          <option *ngFor="let team of teams" [value]="team">
+            {{ team }}
+          </option>
+        </select>
+      </label>
+
+      <label>
+        <span>Subscription plan</span>
         <select formControlName="plan">
           <option value="Starter">Starter</option>
           <option value="Growth">Growth</option>
@@ -105,7 +134,7 @@
       </label>
 
       <label>
-        <span>Role</span>
+        <span>Access role</span>
         <select formControlName="role">
           <option *ngFor="let role of roles" [value]="role">
             {{ role | titlecase }}
@@ -114,17 +143,32 @@
       </label>
 
       <label>
-        <span>Status</span>
+        <span>Account status</span>
         <select formControlName="status">
           <option *ngFor="let status of statuses" [value]="status">
-            {{ status }}
+            {{ getStatusLabel(status) }}
           </option>
         </select>
       </label>
 
       <div class="users-form__actions">
         <button type="submit" class="users-button" [disabled]="isSaving">
-          {{ isSaving ? 'Saving...' : editingUserId ? 'Save changes' : 'Create user' }}
+          <span class="button-content">
+            <span
+              class="button-spinner"
+              *ngIf="isSaving"
+              aria-hidden="true"
+            ></span>
+            <span>
+              {{
+                isSaving
+                  ? 'Saving...'
+                  : editingUserId
+                    ? 'Save changes'
+                    : 'Create user'
+              }}
+            </span>
+          </span>
         </button>
         <button
           type="button"
@@ -138,61 +182,237 @@
   </section>
 
   <section *ngIf="isLoading" class="users-loading">
-    <app-skeleton-block [height]="280"></app-skeleton-block>
+    <section class="users-table users-table--skeleton app-card">
+      <div class="users-table__header">
+        <div>
+          <p class="users-toolbar__eyebrow">Filtered results</p>
+          <h2>Workspace directory</h2>
+          <p>Loading user records, account status, and access controls.</p>
+        </div>
+      </div>
+
+      <div class="users-table__wrap">
+        <table class="users-table__grid users-table__grid--skeleton" aria-hidden="true">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Role</th>
+              <th scope="col">Status</th>
+              <th scope="col">Last active</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let row of skeletonRows">
+              <td>
+                <div class="users-person users-person--skeleton">
+                  <app-skeleton-block [height]="44" width="2.8rem"></app-skeleton-block>
+                  <div class="users-person__meta users-person__meta--skeleton">
+                    <app-skeleton-block [height]="16" width="9rem"></app-skeleton-block>
+                    <app-skeleton-block [height]="14" width="7rem"></app-skeleton-block>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="users-email users-email--skeleton">
+                  <app-skeleton-block [height]="16" width="12rem"></app-skeleton-block>
+                  <app-skeleton-block [height]="14" width="5rem"></app-skeleton-block>
+                </div>
+              </td>
+              <td><app-skeleton-block [height]="32" width="5rem"></app-skeleton-block></td>
+              <td><app-skeleton-block [height]="32" width="6rem"></app-skeleton-block></td>
+              <td><app-skeleton-block [height]="16" width="6rem"></app-skeleton-block></td>
+              <td><app-skeleton-block [height]="32" width="11rem"></app-skeleton-block></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </section>
 
   <ng-container *ngIf="!isLoading">
-    <ng-container *ngIf="filteredUsers$ | async as users">
-      <section class="table-card app-card" *ngIf="users.length; else emptyUsers">
-        <div class="table-card__toolbar">
+    <ng-container *ngIf="usersTableVm$ | async as vm">
+      <section class="users-table app-card" *ngIf="vm.total; else emptyUsers">
+        <div class="users-table__header">
           <div>
             <p class="users-toolbar__eyebrow">Filtered results</p>
-            <h2>{{ users.length }} users</h2>
+            <h2>{{ vm.total }} users</h2>
+            <p>
+              Review workspace access, status, and recent activity in one place
+              without losing your active filters.
+            </p>
           </div>
         </div>
 
-        <div class="table-card__row table-card__row--head">
-          <span>Name</span>
-          <span>Email</span>
-          <span>Plan</span>
-          <span>Role</span>
-          <span>Status</span>
-          <span>Last seen</span>
-          <span *appHasRole="['admin']">Actions</span>
+        <div class="users-table__wrap">
+          <table class="users-table__grid">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                <th scope="col">Last active</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let user of vm.users; trackBy: trackByUserId">
+                <td>
+                  <div class="users-person">
+                    <div class="users-person__avatar">
+                      {{ getUserInitials(user) }}
+                    </div>
+
+                    <div class="users-person__meta">
+                      <div class="users-person__title-row">
+                        <strong>{{ user.name }}</strong>
+
+                        <span
+                          class="users-badge users-badge--recent"
+                          *ngIf="user.id === recentlyCreatedUserId"
+                        >
+                          New
+                        </span>
+                      </div>
+
+                      <span>{{ user.title }} | {{ user.team }}</span>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <div class="users-email">
+                    <strong>{{ user.email }}</strong>
+                    <span>{{ user.plan | fallback:'Trial pending' }}</span>
+                  </div>
+                </td>
+
+                <td>
+                  <span
+                    class="users-badge"
+                    [ngClass]="'users-badge--role-' + getRoleTone(user.role)"
+                  >
+                    {{ user.role | titlecase }}
+                  </span>
+                </td>
+
+                <td>
+                  <span
+                    class="users-badge"
+                    [ngClass]="'users-badge--status-' + getStatusTone(user.status)"
+                  >
+                    {{ getStatusLabel(user.status) }}
+                  </span>
+                </td>
+
+                <td>{{ user.lastSeen }}</td>
+
+                <td>
+                  <div class="users-actions" *appHasRole="['admin']">
+                    <button
+                      type="button"
+                      class="users-link"
+                      (click)="startEdit(user)"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      type="button"
+                      class="users-link"
+                      (click)="toggleUserStatus(user)"
+                      [disabled]="updatingUserId === user.id"
+                    >
+                      {{
+                        updatingUserId === user.id
+                          ? 'Updating...'
+                          : getToggleActionLabel(user)
+                      }}
+                    </button>
+
+                    <button
+                      type="button"
+                      class="users-link users-link--danger"
+                      (click)="promptDelete(user)"
+                      [disabled]="isDeleting"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <div class="table-card__row" *ngFor="let user of users">
-          <span>{{ user.name }}</span>
-          <span>{{ user.email }}</span>
-          <span>{{ user.plan | fallback:'Trial pending' }}</span>
-          <span>
-            <span class="status-pill">{{ user.role | titlecase }}</span>
-          </span>
-          <span>
-            <span class="status-pill">{{ user.status }}</span>
-          </span>
-          <span>{{ user.lastSeen }}</span>
-          <span class="table-card__actions" *appHasRole="['admin']">
+        <footer class="users-table__footer">
+          <p>Showing {{ vm.start }}-{{ vm.end }} of {{ vm.total }} users</p>
+
+          <div class="users-pagination">
             <button
               type="button"
-              class="users-link"
-              (click)="startEdit(user)"
+              class="users-button users-button--secondary"
+              (click)="setPage(vm.page - 1)"
+              [disabled]="vm.page === 1"
             >
-              Edit
+              Previous
             </button>
+
+            <span>Page {{ vm.page }} of {{ vm.totalPages }}</span>
+
             <button
               type="button"
-              class="users-link users-link--danger"
-              (click)="deleteUser(user.id)"
-              [disabled]="isDeleting"
+              class="users-button users-button--secondary"
+              (click)="setPage(vm.page + 1)"
+              [disabled]="vm.page === vm.totalPages"
             >
-              Delete
+              Next
             </button>
-          </span>
-        </div>
+          </div>
+        </footer>
       </section>
     </ng-container>
   </ng-container>
+
+  <div class="users-dialog-backdrop" *ngIf="deleteCandidate">
+    <section
+      class="users-dialog app-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-user-title"
+    >
+      <p class="users-toolbar__eyebrow">Confirm action</p>
+      <h2 id="delete-user-title">Delete {{ deleteCandidate.name }}?</h2>
+      <p>
+        This mock action removes the user from the current workspace list and
+        cannot be undone from this screen.
+      </p>
+
+      <div class="users-dialog__actions">
+        <button
+          type="button"
+          class="users-button users-button--secondary"
+          (click)="cancelDelete()"
+          [disabled]="isDeleting"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="users-button users-button--danger"
+          (click)="confirmDelete()"
+          [disabled]="isDeleting"
+        >
+          {{ isDeleting ? 'Deleting...' : 'Delete user' }}
+        </button>
+      </div>
+    </section>
+  </div>
 
   <ng-template #emptyUsers>
     <section class="users-state app-card">

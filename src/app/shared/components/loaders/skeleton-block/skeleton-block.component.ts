@@ -9,4 +9,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class SkeletonBlockComponent {
   @Input() height = 120;
+  @Input() width: string | null = null;
 }

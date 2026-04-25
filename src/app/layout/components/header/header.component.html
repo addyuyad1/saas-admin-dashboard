@@ -66,6 +66,19 @@
       {{ (connectionState$ | async) === 'syncing' ? 'Syncing' : 'Live' }}
     </span>
 
+    <button
+      type="button"
+      class="header__theme-toggle"
+      (click)="toggleTheme()"
+      *ngIf="theme$ | async as theme"
+      [attr.aria-label]="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <span class="header__theme-toggle-icon" aria-hidden="true">
+        {{ theme === 'dark' ? '☀' : '◐' }}
+      </span>
+      <span>{{ theme === 'dark' ? 'Light mode' : 'Dark mode' }}</span>
+    </button>
+
     <div class="header__notifications">
       <button
         type="button"
@@ -156,17 +169,21 @@
           <span>{{ session.user.roleLabel }}</span>
         </div>
 
-        <button type="button" class="header__dropdown-item" (click)="openProfile()">
+        <a
+          class="header__dropdown-item"
+          [routerLink]="['/settings']"
+          fragment="profile"
+          (click)="openProfile()"
+        >
           Profile
-        </button>
-        <button type="button" class="header__dropdown-item" (click)="openSettings()">
+        </a>
+        <a
+          class="header__dropdown-item"
+          [routerLink]="['/settings']"
+          (click)="openSettings()"
+        >
           Settings
-        </button>
-        <button type="button" class="header__dropdown-item" (click)="toggleTheme()">
-          <ng-container *ngIf="theme$ | async as theme">
-            Switch to {{ theme === 'dark' ? 'light' : 'dark' }} mode
-          </ng-container>
-        </button>
+        </a>
         <button
           type="button"
           class="header__dropdown-item header__dropdown-item--danger"

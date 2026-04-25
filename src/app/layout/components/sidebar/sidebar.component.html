@@ -11,6 +11,7 @@
     <a
       *ngFor="let item of navigationItems"
       [routerLink]="item.path"
+      (click)="onNavigationClick(item.path)"
       routerLinkActive="is-active"
       [routerLinkActiveOptions]="{ exact: true }"
       class="sidebar__link"

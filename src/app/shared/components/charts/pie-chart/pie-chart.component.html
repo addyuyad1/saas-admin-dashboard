@@ -1,0 +1,19 @@
+<div class="pie-chart">
+  <svg
+    #svgHost
+    class="pie-chart__surface"
+    role="img"
+    [attr.aria-label]="ariaLabel"
+  ></svg>
+
+  <ul class="pie-chart__legend">
+    <li *ngFor="let item of data; let index = index">
+      <span
+        class="pie-chart__swatch"
+        [style.backgroundColor]="palette[index % palette.length]"
+      ></span>
+      <span>{{ item.name }}</span>
+      <strong>{{ item.value | number }}</strong>
+    </li>
+  </ul>
+</div>

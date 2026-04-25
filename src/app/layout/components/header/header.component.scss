@@ -1,4 +1,8 @@
 .header {
+  position: relative;
+  z-index: 1000;
+  overflow: visible;
+  isolation: isolate;
   margin: 1rem 1.25rem 0;
   padding: 0.9rem 1.1rem;
   display: grid;
@@ -70,6 +74,8 @@
 }
 
 .header__actions {
+  position: relative;
+  overflow: visible;
   display: flex;
   align-items: center;
   gap: 0.65rem;
@@ -77,9 +83,42 @@
   justify-content: flex-end;
 }
 
+.header__theme-toggle {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 86%, white);
+  color: var(--text);
+  padding: 0.6rem 0.9rem;
+  min-height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-soft);
+}
+
+.header__theme-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 28px rgba(20, 42, 84, 0.12);
+  border-color: color-mix(in srgb, var(--border) 55%, var(--primary) 45%);
+}
+
+.header__theme-toggle-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 14%, white);
+  color: var(--primary-dark);
+  font-size: 0.82rem;
+  line-height: 1;
+}
+
 .header__notifications,
 .header__user-menu {
   position: relative;
+  z-index: 1;
 }
 
 .header__search-dropdown,
@@ -91,13 +130,16 @@
   padding: 0.6rem;
   display: grid;
   gap: 0.3rem;
-  z-index: 20;
-  animation: header-dropdown-in 140ms ease;
+  overflow: visible;
+  z-index: 9999;
+  box-shadow: 0 22px 48px rgba(20, 42, 84, 0.2);
+  animation: header-dropdown-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .header__search-dropdown {
   left: 0;
   min-width: 0;
+  right: auto;
 }
 
 .header__search-label {
@@ -211,6 +253,7 @@
 
 .header__panel {
   width: min(360px, calc(100vw - 2rem));
+  right: 0;
 }
 
 .header__panel-header {
@@ -331,12 +374,12 @@
 @keyframes header-dropdown-in {
   from {
     opacity: 0;
-    transform: translateY(-4px);
+    transform: translateY(-8px) scale(0.98);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -368,6 +411,10 @@
   .header__user-button {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .header__theme-toggle {
+    justify-content: center;
   }
 
   .header__dropdown {
